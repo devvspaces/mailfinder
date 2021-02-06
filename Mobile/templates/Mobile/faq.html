@@ -1,0 +1,96 @@
+{% extends 'Mobile/base.html' %}
+{% load static %}
+{% block pageContent %}
+
+<!--hero section start-->
+
+<section class="hero-banner position-relative custom-pt-1 custom-pb-2 bg-dark" data-bg-img="{% static 'images/bg/02.png' %}">
+  <div class="container">
+    <div class="row text-white text-center z-index-1">
+      <div class="col">
+        <h1 class="text-white">Frequently Asked Questions</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center bg-transparent p-0 m-0">
+            <li class="breadcrumb-item"><a class="text-white" href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item">Pages</li>
+            <!-- <li class="breadcrumb-item">Utilities</li> -->
+            <li class="breadcrumb-item active text-primary" aria-current="page">FAQ</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <!-- / .row -->
+  </div>
+  <!-- / .container -->
+  <div class="shape-1 bottom">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#fff" fill-opacity="1" d="M0,288L48,288C96,288,192,288,288,266.7C384,245,480,203,576,208C672,213,768,267,864,245.3C960,224,1056,128,1152,96C1248,64,1344,96,1392,112L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </div>
+</section>
+
+<!--hero section end--> 
+
+
+<!--body content start-->
+
+<div class="page-content">
+
+<section>
+  <div class="container">
+    <div class="row align-items-center justify-content-between">
+      <div class="col-12 col-lg-6 mb-8 mb-lg-0">
+        <img src="{% static 'images/about/04.png' %}" alt="Image" class="img-fluid">
+      </div>
+      <div class="col-12 col-lg-6 col-xl-5">
+<div class="accordion" id="accordion">
+          <div class="accordion-item rounded mb-2">
+            <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button border-0 mb-0 bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        When our power of choice ?
+      </button>
+    </h2>
+            <div id="collapseOne" class="accordion-collapse border-0 collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion">
+              <div class="accordion-body text-muted">Looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites and web page editors.</div>
+            </div>
+          </div>
+          <div class="accordion-item rounded mb-2">
+            <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button border-0 mb-0 bg-transparent collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Nam libero tempore, cum soluta nobis ?
+      </button>
+    </h2>
+            <div id="collapseTwo" class="accordion-collapse border-0 collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion">
+              <div class="accordion-body text-muted">Looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites and web page editors.</div>
+            </div>
+          </div>
+          <div class="accordion-item rounded">
+            <h2 class="accordion-header" id="headingThree">
+      <button class="accordion-button border-0 mb-0 bg-transparent collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        which is the same as saying through ?
+      </button>
+    </h2>
+            <div id="collapseThree" class="accordion-collapse border-0 collapse" aria-labelledby="headingThree" data-bs-parent="#accordion">
+              <div class="accordion-body text-muted">Looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites and web page editors.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!--newsletter start-->
+
+{% include 'Mobile/suscriber.html' %}
+
+<!--newsletter end-->
+
+</div>
+
+<!--body content end--> 
+
+{% endblock %}
+

@@ -1,0 +1,635 @@
+{% extends 'Mobile/base.html' %}
+{% load static %}
+{% block pageContent %}
+<!--hero section start-->
+
+<section class="hero-banner position-relative hero-shape2 custom-py-1 overflow-hidden">
+  <div class="container">
+    <div class="row align-items-center justify-content-between">
+      <div class="col-12 col-lg-5">
+        <h1 class="mb-4 font-w-4">
+               help you work <span class="font-w-6 text-primary">smarter</span>, not <span class="font-w-6 text-primary">harder</span>            
+            </h1> 
+        
+        <!-- Buttons --> <a href="search-center.html" class="btn btn-primary">
+                Start Now
+              </a>
+      </div>
+      <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+        <div class="bg-white shadow-primary rounded overflow-hidden p-3 me-n8">
+          <div class="owl-carousel no-pb" data-dots="false" data-items="1" data-autoplay="true">
+            <div class="item">
+              <img class="img-fluid border border-light" src="{% static 'images/about/03.jpg' %}" alt="">
+            </div>
+            <div class="item">
+              <img class="img-fluid border border-light" src="{% static 'images/about/02.jpg' %}" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / .row -->
+  </div>
+  <!-- / .container -->
+</section>
+
+<!--hero section end--> 
+
+
+<!--body content start-->
+
+<div class="page-content">
+
+<!--feature start-->
+
+<!-- <section class="p-0">
+  <div class="container">
+    <div class="row align-items-center justify-content-center">
+      <div class="col-lg-5 col-md-6 pe-lg-4">
+        <div class="mb-5">
+          <h2 class="mb-0"><span class="font-w-4 d-block">Exclusive services</span> for the next creative  project</h2>
+        </div>
+        <div class="px-lg-7 px-4 py-5 rounded bg-white shadow text-center">
+          <div>
+            <img class="img-fluid" src="{% static 'images/svg/01.svg' %}" alt="">
+          </div>
+          <h5 class="mt-4 mb-3">Dashboard</h5>
+          <p class="mb-0">Taking design from winck design and typography, contemporary page layouts.</p>
+        </div>
+        <div class="px-lg-7 px-4 py-5 rounded bg-white shadow text-center mt-5">
+          <div>
+            <img class="img-fluid" src="{% static 'images/svg/02.svg' %}" alt="">
+          </div>
+          <h5 class="mt-4 mb-3">Easy to use</h5>
+          <p class="mb-0">Taking design from winck design and typography, contemporary page layouts.</p>
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-6 ps-lg-4 mt-5 mt-lg-0">
+        <div class="px-lg-7 px-4 py-5 rounded bg-white shadow text-center">
+          <div>
+            <img class="img-fluid" src="{% static 'images/svg/03.svg' %}" alt="">
+          </div>
+          <h5 class="mt-4 mb-3">Clean code</h5>
+          <p class="mb-0">Taking design from winck design and typography, contemporary page layouts.</p>
+        </div>
+        <div class="px-lg-7 px-4 py-5 rounded bg-white shadow text-center mt-5">
+          <div>
+            <img class="img-fluid" src="{% static 'images/svg/04.svg' %}" alt="">
+          </div>
+          <h5 class="mt-4 mb-3">User Friendly</h5>
+          <p class="mb-0">Taking design from winck design and typography, contemporary page layouts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!--feature end-->
+
+
+<section class="py-4">
+  <div class="container">
+    <div class="row align-items-center justify-content-between">
+      <div class="col-12 col-lg-6">
+        <img src="{% static 'images/about/06.png' %}" alt="Image" class="img-fluid">
+      </div>
+      <div class="col-12 col-lg-5 mt-5 mt-lg-0">
+        <div class="mb-4">
+          <h2><span class="font-w-4 d-block">Easily Collect</span> Email's that you want</h2>
+          <p class="lead mb-0">Easily collect email's for your brand promotions & for your campaings .</p>
+        </div>
+        <div class="row no-gutters">
+          <div class="col-sm">
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div> <i class="las la-angle-right"></i>
+                </div>
+                <p class="mb-0 ms-3">100% valid E-mails</p>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div> <i class="las la-angle-right"></i>
+                </div>
+                <p class="mb-0 ms-3">Collect & Customize</p>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div> <i class="las la-angle-right"></i>
+                </div>
+                <p class="mb-0 ms-3">Find the perfect candidate</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm">
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div> <i class="las la-angle-right"></i>
+                </div>
+                <p class="mb-0 ms-3">Easy To use</p>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div> <i class="las la-angle-right"></i>
+                </div>
+                <p class="mb-0 ms-3">Create Your Campaign</p>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div> <i class="las la-angle-right"></i>
+                </div>
+                <p class="mb-0 ms-3">Get more leads</p>
+              </div>
+            </div>
+          </div>
+        </div>
+<a href="about-us-1.html" class="btn btn-outline-primary mt-4">
+                Learn More
+              </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!--about start-->
+
+
+
+<!--about end-->
+
+
+<!--pricing start-->
+
+<section class="pb-0">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2><span class="font-w-4 d-block">Simple, Fair and</span> affordable prices for all.</h2>
+          <p class="lead mb-0">Easily collect email's for your brand promotions & for your campaings .</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="position-relative bg-light pt-0 z-index-1">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-12 z-index-1">
+        <div class="row align-items-center">
+          <div class="col-12 col-lg-4 col-md-6 mb-5 mb-lg-0">
+            <!-- Card -->
+            <div class="card bg-white border-0 shadow">
+              <!-- Body -->
+              <div class="card-body py-5 px-4">
+                <img class="img-fluid" src="{% static 'images/icon/01.svg' %}" alt="">
+                <!-- Badge -->
+                <div class="my-4"> <span class="h2">Basic</span>
+                  <p class="mb-0 text-light">Perfect For Small Business</p>
+                </div>
+                <!-- Features -->
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Free Custom Domain</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Flexible, simple license</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Monthly updates</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Optimized for mobile</p>
+                </div>
+                <div class="d-flex align-items-center">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Outstanding Support</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-5 pt-5 border-top">
+                  <!-- Price -->
+                  <div class="d-flex align-items-start justify-content-center"> <span class="text-muted mt-2">$</span>
+                    <span class="price display-4 font-w-6 text-primary mb-0">23</span>
+                    <span class="text-muted h4 mb-1 align-self-end">/mo</span>
+                  </div>
+                  <!-- Button --> <a href="#" class="btn btn-primary">
+                Get Started
+              </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4 col-md-6 mb-5 mb-lg-0">
+            <!-- Card -->
+            <div class="card bg-white border-0 shadow">
+              <!-- Body -->
+              <div class="card-body py-5 px-4">
+                <img class="img-fluid" src="{% static 'images/icon/01.svg' %}" alt="">
+                <!-- Badge -->
+                <div class="my-4 bg-dark p-3 rounded"> <span class="h2 text-white">Standard</span>
+                  <p class="mb-0 text-light">Perfect For Small Business</p>
+                </div>
+                <!-- Features -->
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-times-circle text-danger"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Unlimited Domain</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Flexible, simple license</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Monthly updates</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Optimized for mobile</p>
+                </div>
+                <div class="d-flex align-items-center">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Outstanding Support</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-5 pt-5 border-top">
+                  <!-- Price -->
+                  <div class="d-flex align-items-start justify-content-center"> <span class="text-muted mt-2">$</span>
+                    <span class="price display-4 font-w-6 text-primary mb-0">77</span>
+                    <span class="text-muted h4 mb-1 align-self-end">/mo</span>
+                  </div>
+                  <!-- Button --> <a href="#" class="btn btn-dark">
+                Get Started
+              </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4 col-md-6">
+            <!-- Card -->
+            <div class="card bg-white border-0 shadow">
+              <!-- Body -->
+              <div class="card-body py-5 px-4">
+                <img class="img-fluid" src="{% static 'images/icon/02.svg' %}" alt="">
+                <!-- Badge -->
+                <div class="my-4"> <span class="h2">Premium</span>
+                  <p class="mb-0 text-light">Perfect For Small Business</p>
+                </div>
+                <!-- Features -->
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-times-circle text-danger"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Unlimited Domain</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Flexible, simple license</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Monthly updates</p>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Optimized for mobile</p>
+                </div>
+                <div class="d-flex align-items-center">
+                  <!-- Check -->
+                  <div class="me-2"> <i class="las la-check-circle text-primary"></i>
+                  </div>
+                  <!-- Text -->
+                  <p class="mb-0">Outstanding Support</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-5 pt-5 border-top">
+                  <!-- Price -->
+                  <div class="d-flex align-items-start justify-content-center"> <span class="text-muted mt-2">$</span>
+                    <span class="price display-4 font-w-6 text-primary mb-0">99</span>
+                    <span class="text-muted h4 mb-1 align-self-end">/mo</span>
+                  </div>
+                  <!-- Button --> <a href="#" class="btn btn-primary">
+                Get Started
+              </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / .row -->
+  </div>
+  <!-- / .container -->
+  <div class="shape-1 overflow-hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#ffffff" fill-opacity="1" d="M0,64L48,80C96,96,192,128,288,160C384,192,480,224,576,202.7C672,181,768,107,864,69.3C960,32,1056,32,1152,80C1248,128,1344,224,1392,272L1440,320L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+    </svg>
+  </div>
+</section>
+
+<!--pricing end-->
+
+<!--counter start-->
+
+<section>
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2><span class="font-w-4 d-block">We're the best on market</span> always deliver more than expected</h2>
+          <p class="lead mb-0">Easily collect email's for your brand promotions & for your campaings .</p>
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-center text-center">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div>
+          <div class="d-flex align-items-center justify-content-center"> <i class="flaticon-project ic-3x text-primary me-2"></i>
+            <span class="count-number display-4 text-dark" data-to="100" data-speed="2000">100</span> <h3>K</h3>
+            <span class="display-4 text-dark">+</span> 
+          </div>
+          <h6 class="text-light mb-0">Email's On Hand</h6>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3 mt-4 mt-sm-0">
+        <div>
+          <div class="d-flex align-items-center justify-content-center"> <i class="flaticon-group ic-3x text-primary me-2"></i>
+            <span class="count-number display-4 text-dark" data-to="50" data-speed="2000">50</span>
+            <span class="display-4 text-dark">+</span> 
+          </div>
+          <h6 class="text-light mb-0">Service Taken</h6>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3 mt-4 mt-lg-0">
+        <div>
+          <div class="d-flex align-items-center justify-content-center"> <i class="flaticon-opinion ic-3x text-primary me-2"></i>
+            <span class="count-number display-4 text-dark" data-to="99" data-speed="2000">99</span>
+            <span class="display-4 text-dark">+</span> 
+          </div>
+          <h6 class="text-light mb-0">People Love Us</h6>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3 mt-4 mt-lg-0">
+        <div>
+          <div class="d-flex align-items-center justify-content-center"> <i class="flaticon-affection ic-3x text-primary me-2"></i>
+            <span class="count-number display-4 text-dark" data-to="120" data-speed="2000">120</span>
+            <span class="display-4 text-dark">+</span> 
+          </div>
+          <h6 class="text-light mb-0">Happy Customers</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--counter end-->
+
+
+<!--step start-->
+
+<section>
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <h2 class="mb-0"><span class="font-w-4 d-block">Working with It</span> simple three step</h2>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-12 col-md-4">
+        <div>
+          <div class="p-3 rounded bg-white shadow position-relative me-3">
+            <img class="img-fluid" src="{% static 'images/svg/05.svg' %}" alt=""> <span class="rotation position-absolute right-0 bottom-0 bg-white shadow rounded px-2 py-1 text-dark h4 font-italic mb-0 me-n3 mb-n3">01</span>
+          </div>
+          <h4 class="mt-4 mb-2">Submit Your Task</h4>
+          <p class="mb-0 text-light">Taking design  and typography, contemporary page layouts.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 mt-5">
+        <div>
+          <div class="p-3 rounded bg-white shadow position-relative me-3">
+            <img class="img-fluid" src="{% static 'images/svg/06.svg' %}" alt=""> <span class="rotation position-absolute right-0 bottom-0 bg-white shadow rounded px-2 py-1 text-dark h4 font-italic mb-0 me-n3 mb-n3">02</span>
+          </div>
+          <h4 class="mt-4 mb-2"> Expert</h4>
+          <p class="mb-0 text-light">Taking design  and typography, contemporary page layouts.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 mt-5 mt-md-0">
+        <div>
+          <div class="p-3 rounded bg-white shadow position-relative me-3">
+            <img class="img-fluid" src="{% static 'images/svg/07.svg' %}" alt=""> <span class="rotation position-absolute right-0 bottom-0 bg-white shadow rounded px-2 py-1 text-dark h4 font-italic mb-0 me-n3 mb-n3">03</span>
+          </div>
+          <h4 class="mt-4 mb-2">Result Delivered</h4>
+          <p class="mb-0 text-light">Taking design  and typography, contemporary page layouts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--step end-->
+
+
+<!--testimonial start-->
+
+<section class="pb-0">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="mb-5">
+          <h2 class="mb-0"><span class="font-w-4 d-block">Working with It</span> simple three step</h2>
+        </div>
+        <div class="card p-3 p-md-5 border-0 bg-white shadow">
+          <div class="card-body p-0"> <i class="las la-quote-left ic-2x text-white bg-primary rounded-circle p-1"></i> 
+            <p class="font-w-5 lead my-3"> Amazing Landing Page All-in-one, clean code, Crative &amp; Modern design Professional Recommended crofessional and great experience.</p>
+            <div class="d-flex align-items-center">
+              <div>
+                <img alt="Image" src="{% static 'images/testimonial/01.jpg' %}" class="img-fluid rounded-circle">
+              </div>
+              <div class="ms-3">
+                <h5 class="text-primary mb-0">Romi Jensen</h5>
+                <small class="text-muted font-italic">- Founder</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mt-5 mt-md-0">
+        <div class="card p-3 p-md-5 border-0 bg-light">
+          <div class="card-body p-0"> <i class="las la-quote-left ic-2x text-white bg-primary rounded-circle p-1"></i> 
+            <p class="font-w-5 lead my-3"> Amazing Landing Page All-in-one, clean code, Crative &amp; Modern design Professional Recommended crofessional and great experience.</p>
+            <div class="d-flex align-items-center">
+              <div>
+                <img alt="Image" src="{% static 'images/testimonial/01.jpg' %}" class="img-fluid rounded-circle">
+              </div>
+              <div class="ms-3">
+                <h5 class="text-primary mb-0">Romi Jensen</h5>
+                <small class="text-muted font-italic">- Founder</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card p-3 p-md-5 border-0 bg-dark mt-5">
+          <div class="card-body p-0"> <i class="las la-quote-left ic-2x text-white bg-primary rounded-circle p-1"></i> 
+            <p class="font-w-5 lead my-3 text-light"> Amazing Landing Page All-in-one, clean code, Crative &amp; Modern design Professional Recommended crofessional and great experience.</p>
+            <div class="d-flex align-items-center">
+              <div>
+                <img alt="Image" src="{% static 'images/testimonial/01.jpg' %}" class="img-fluid rounded-circle">
+              </div>
+              <div class="ms-3">
+                <h5 class="text-primary mb-0">Romi Jensen</h5>
+                <small class="text-muted font-italic">- Founder</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--testimonial end-->
+
+
+<!--blog start-->
+
+<!-- <section class="bg-dark mt-n10 py-10">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 mt-6 mt-md-0">
+        <div>
+          <h2 class="text-white"><span class="font-w-4 d-block">From Our Blog</span> List Latest Feed</h2>
+          <p class="lead mb-0 text-light"> Amazing Landing Page of businesses need access to development resources.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- <section class="pt-0 mt-n8">
+  <div class="container">
+    <div class="row">
+      <div class="col"> -->
+        <!-- Blog Card -->
+        <!-- <div class="card border-0 flex-md-row align-items-center">
+          <div class="col-md-4">
+            <img class="img-fluid" src="{% static 'images/blog/01.jpg' %}" alt="Image">
+          </div>
+          <div class="card-body col-md-6">
+            <div>
+              <div class="d-inline-block bg-light text-center px-2 py-1 rounded me-2"><span class="text-primary">05</span>
+                Sep</div> <a class="d-inline-block btn-link" href="#">Sass</a>
+            </div>
+            <h2 class="h5 my-3">
+                <a class="link-title" href="blog-single.html">trending landing page 2020</a>
+              </h2>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item pe-3"> <a href="#" class="list-group-item-action"><i class="lar la-user-circle me-1 text-primary ic-1x"></i> Admin</a>
+              </li>
+              <li class="list-inline-item pe-3"> <a href="#" class="list-group-item-action"><i class="las la-eye me-1 text-primary ic-1x"></i> 275</a>
+              </li>
+              <li class="list-inline-item"> <a href="#" class="list-group-item-action"><i class="lar la-comments me-1 text-primary ic-1x"></i> 300</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-2"> <a href="blog-listing.html" class="btn btn-primary">
+                Read More
+              </a>
+          </div>
+        </div> -->
+        <!-- End Blog Card -->
+        
+        <!-- Blog Card -->
+        <!-- <div class="card border-0 flex-md-row align-items-center mt-5">
+          <div class="col-md-4">
+            <img class="img-fluid" src="{% static 'images/blog/02.jpg' %}" alt="Image">
+          </div>
+          <div class="card-body col-md-6">
+            <div>
+              <div class="d-inline-block bg-light text-center px-2 py-1 rounded me-2"><span class="text-primary">05</span>
+                Sep</div> <a class="d-inline-block btn-link" href="#">Software</a>
+            </div>
+            <h2 class="h5 my-3">
+                <a class="link-title" href="blog-single.html">The evolution of landing page creativity</a>
+              </h2>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item pe-3"> <a href="#" class="list-group-item-action"><i class="lar la-user-circle me-1 text-primary ic-1x"></i> Admin</a>
+              </li>
+              <li class="list-inline-item pe-3"> <a href="#" class="list-group-item-action"><i class="las la-eye me-1 text-primary ic-1x"></i> 275</a>
+              </li>
+              <li class="list-inline-item"> <a href="#" class="list-group-item-action"><i class="lar la-comments me-1 text-primary ic-1x"></i> 300</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-2"> <a href="blog-listing.html" class="btn btn-primary">
+                Read More
+              </a>
+          </div>
+        </div> -->
+        <!-- End Blog Card -->
+      <!-- </div>
+    </div>
+  </div>
+</section> -->
+
+<!--blog end-->
+
+
+
+<!--newsletter start-->
+
+{% include 'Mobile/suscriber.html' %}
+
+<!--newsletter end-->
+
+</div>
+
+<!--body content end--> 
+{% endblock %}

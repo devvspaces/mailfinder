@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<!-- meta tags -->
+<meta charset="utf-8">
+<meta name="keywords" content="bootstrap 5, premium, multipurpose, sass, scss, saas" />
+<meta name="description" content="Bootstrap 5 Landing Page Template" />
+<meta name="author" content="www.themeht.com" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% if title %}
+    <title>MailFinder - {{title}}</title>
+{% else %}
+    <title>MailFinder</title>
+{% endif %}
+
+<!-- Title -->
+<title></title>
+
+<!-- Favicon Icon -->
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+
+<!-- inject css start -->
+
+<!--== bootstrap -->
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== animate -->
+<link href="{% static 'css/animate.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== line-awesome -->
+<link href="{% static 'css/line-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== magnific-popup -->
+<link href="{% static 'css/magnific-popup.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== owl.carousel -->
+<link href="{% static 'css/owl.carousel.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== lightslider -->
+<link href="{% static 'css/lightslider.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== spacing -->
+<link href="{% static 'css/spacing.css' %}" rel="stylesheet" type="text/css" />
+
+<!--== theme.min -->
+<link href="{% static 'css/theme.min.css' %}" rel="stylesheet" />
+
+<!-- inject css end -->
+
+</head>
+
+<body>
+
+<!-- page wrapper start -->
+
+<div class="page-wrapper">
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        <span class="close"><i class="fas fa-times"></i></span>
+        {{message}}
+      </div>
+    {% endfor %}
+  {% endif %}
+  
+<!-- preloader start -->
+
+<!-- <div id="ht-preloader">
+  <div class="loader clear-loader"> <span>W</span>
+    <span>i</span>
+    <span>n</span>
+    <span>c</span>
+    <span>k</span>
+  </div>
+</div> -->
+
+<!-- preloader end -->
+
+
+<!--header start-->
+
+<header class="site-header">
+  <div id="header-wrap">
+    <div class="container">
+      <div class="row">
+        <!--menu start-->
+        <div class="col"> 
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand logo text-primary mb-0 font-w-7" href="index.html">
+              <span class="text-dark font-w-4"></span>
+            </a>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'home' %}" >Home</a>
+                  
+                </li>
+                  <!-- <li class="nav-item dropdown"> <a class="nav-link " href="#" >Company</a> -->
+                  
+                </li>
+                  <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'about' %}" >About Us</a>
+                  
+                </li>
+                  <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'contact' %}" >Contact Us</a>
+                  
+                </li>
+                
+                 
+            
+                
+                
+              </ul>
+            </div>
+            <div class="d-sm-flex align-items-center justify-content-end"> <a class="btn-link" href="login.html">Login</a>  <a class="btn btn-primary btn-sm ms-3 d-sm-inline-block d-none" href="signup.html">Sign Up</a> 
+          </div>
+          </nav>
+          
+        </div>
+        <!--menu end-->
+      </div>
+    </div>
+  </div>
+</header>
+
+<!--header end-->
+
+
+<!--hero section start-->
+
+{% block pageContent %}
+{% endblock %}
+
+<!--hero section end--> 
+
+
+<!--body content start-->
+
+
+
+<!--body content end--> 
+
+
+<!--footer start-->
+
+<footer class="bg-dark py-7">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-5 col-xl-4 me-auto mb-5 mb-lg-0">
+        <a class="footer-logo h2 text-primary mb-0 font-w-7" href="index.html">
+              <span class="text-white font-w-4"></span>
+            </a>
+            <p class="my-3 text-light"></p>
+            <ul class="list-inline">
+          <li class="list-inline-item"><a class="border rounded px-2 py-1 text-light" href="#"><i class="la la-facebook"></i></a>
+          </li>
+          <li class="list-inline-item"><a class="border rounded px-2 py-1 text-light" href="#"><i class="la la-dribbble"></i></a>
+          </li>
+          <li class="list-inline-item"><a class="border rounded px-2 py-1 text-light" href="#"><i class="la la-instagram"></i></a>
+          </li>
+          <li class="list-inline-item"><a class="border rounded px-2 py-1 text-light" href="#"><i class="la la-twitter"></i></a>
+          </li>
+          <li class="list-inline-item"><a class="border rounded px-2 py-1 text-light" href="#"><i class="la la-linkedin"></i></a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-12 col-lg-6 col-xl-7">
+        <div class="row">
+          <div class="col-12 col-sm-4">
+            <h5 class="mb-4 text-white">Pages</h5>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'about' %}">About</a>
+              </li>
+              <!-- <li class="mb-3"><a class="list-group-item-action text-light" href="product-grid.html">Shop</a> -->
+              </li>
+              <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'faq' %}">Faq</a>
+              </li>
+              <li><a class="list-group-item-action text-light" href="{% url 'contact' %}">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-12 col-sm-4 mt-6 mt-sm-0">
+            <h5 class="mb-4 text-white">Service</h5>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-3"><a class="list-group-item-action text-light" href="#">Content Writing</a>
+              </li>
+              <li class="mb-3"><a class="list-group-item-action text-light" href="#">Documentation</a>
+              </li>
+              <li class="mb-3"><a class="list-group-item-action text-light" href="login.html">Account</a>
+              </li>
+              <!-- <li><a class="list-group-item-action text-light" href="career.html">Careers</a> -->
+              </li>
+            </ul>
+          </div>
+          <div class="col-12 col-sm-4 mt-6 mt-sm-0">
+            <h5 class="mb-4 text-white">Our Address</h5>
+            <div class="mb-3">
+          <p class="mb-0 text-light">423B, Road Wordwide Country, USA</p>
+        </div>
+        <div class="mb-3">
+          <a class="btn-link text-light" href="#"> example@gmail.com</a>
+        </div>
+        <div>
+          <a class="btn-link text-light" href="tel:+912345678900">+91-234-567-8900</a>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row my-5">
+      <div class="col"><hr class="m-0"></div>
+    </div>
+    <div class="row align-items-center">
+      <div class="col-md-6 text-light">
+        Copyright ©2020 All rights reserved | <i class="lar la-heart text-primary heartBeat2"></i>  <u><a class="text-primary" href="#"></a></u></div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+          <ul class="list-inline mb-0">
+            <li class="me-3 list-inline-item"> <a class="list-group-item-action text-light" href="{% url 'terms' %}">
+                  Term Of Service
+                </a>
+            </li>
+            <li class="me-3 list-inline-item"> <a class="list-group-item-action text-light" href="{% url 'privacy' %}">
+                  Privacy Policy
+                </a>
+            </li>
+            <li class="list-inline-item"> <a class="list-group-item-action text-light" href="mailto:example@gmail.com">
+                  Support
+                </a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+</footer>
+
+<!--footer end-->
+
+</div>
+
+<!-- page wrapper end -->
+
+ 
+<!--back-to-top start-->
+
+<div class="scroll-top"><a class="smoothscroll" href="#top">Scroll Top</a></div>
+
+<!--back-to-top end-->
+
+<!-- inject js start -->
+<script src="{% static 'js/theme-plugin.js' %}"></script>
+<script src="{% static 'js/theme-script.js' %}"></script>
+
+<!-- inject js end -->
+
+</body>
+
+
+</html>

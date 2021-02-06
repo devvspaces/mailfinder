@@ -1,0 +1,13 @@
+{% autoescape off %}
+<strong>You are getting this email because someone is trying to contact you from MailFinder</strong>
+
+<h3>Contact information:</h3>
+Name: {{name}}
+Email: {{email}}
+Phone: {{phone}}
+
+<h3>Message:</h3>
+Subject: {{subject}}
+Service: {{service}}
+Message: {{messages}}
+{% endautoescape %}
