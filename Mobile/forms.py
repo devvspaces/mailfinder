@@ -38,5 +38,5 @@ class ContactForm(forms.Form):
            'service': service, 
            'messages': messages,
         })
-        val = send_mail(subject=subject, message=message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[settings.DEFAULT_COMPANY_NAME], fail_silently=fail)
+        val = send_mail(subject=subject, message=rendered_message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[settings.DEFAULT_COMPANY_EMAIL], fail_silently=True)
         return True if val else False

@@ -1,11 +1,6 @@
 from django.contrib import messages
-# from django.core.paginator import Paginator
-# from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-# from django.core.exceptions import PermissionDenied
-from django.shortcuts import render, redirect, get_object_or_404
-# from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView
-from django.urls import reverse
 
 from .models import Subscriber
 from .forms import SubscriberForm, ContactForm
@@ -66,8 +61,25 @@ class Contact(FormView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
+        context['form'] = self.form_class()
         return render(request, self.template_name, context)
     
-    def post(self, form, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         request = self.request
+        context = self.get_context_data()
+
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            val = form.send_email()
+            if val:
+                messages.success(request, 'We have received your message and we will get back to you.')
+                return redirect('contact')
+            else:
+                messages.warning(request, 'Your message was not sent please try again.')
+        else:
+            messages.warning(request, 'You did not properly fill the contact form.')
+        
+        context['form'] = form
+        
+        return render(request, self.template_name, context)
         

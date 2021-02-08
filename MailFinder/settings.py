@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'Mobile',
 ]
 
+AUTH_USER_MODEL = 'Account.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -126,4 +128,4 @@ EMAIL_HOST_PASSWORD = 'wpcgtxfwmiqnlbwv'
 # Custom user defined mail username
 # DEFAULT_FROM_EMAIL = 'info@xcrowme.com'
 DEFAULT_FROM_EMAIL = 'mailfinder@gmail.com'
-DEFAULT_FROM_EMAIL = 'netrobeweb@gmail.com'
+DEFAULT_COMPANY_EMAIL = 'netrobeweb@gmail.com'

@@ -1,0 +1,28 @@
+#Validating if an email is correct, use selenium on the following sites
+www.email-checker.net
+http://www.mailtester.com/
+www.verify-email.org
+
+#Validating emails by validating domain cname, a and mx records
+https://www.tutorialspoint.com/python_network_programming/python_dns_look_up.htm
+
+#Finding emails with the following processes
+1. When dealing with domain names we visit the domain, find all pages in the domain and try to scrape email
+addresses
+2. Websites with email lists for free like
+@ Learn to scrape this website http://www.email-database.info/email-database.html
+NB: aya@gmail.com == aya-gmail.com
+3. To get more resources search google for emails and put the emails in quotation marks
+
+#Extracting emails from pages
+1. Use regex, selenium and bs4
+2. Use extract-emails 4.1.0 == pip install extract-emailsCopy PIP instructions
+OR
+3. email-scraper 0.3 == pip install email-scraper
+
+
+
+#How to search google with python
+https://www.geeksforgeeks.org/performing-google-search-using-python-code/
+
+#How to find all pages associated with a domain

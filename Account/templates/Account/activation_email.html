@@ -1,0 +1,14 @@
+{% autoescape off %}
+Hi {{ user }},
+
+Welcome to MailFinder, please verify your email address with the link below;
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Do not share this link with anyone else, it might compromise your security, keep it undisclosed.
+
+To the moon
+Team MailFinders
+
+{{from}}
+{% endautoescape %}

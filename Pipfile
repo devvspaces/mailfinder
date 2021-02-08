@@ -5,6 +5,13 @@ name = "pypi"
 
 [packages]
 django = "*"
+six = "*"
+requests = "*"
+beautifulsoup4 = "*"
+pandas = "*"
+html5lib = "*"
+lxml = "*"
+googlesearch-python = "*"
 
 [dev-packages]
 
