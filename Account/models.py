@@ -101,9 +101,13 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f'User {self.email}'
+    
+    @property
+    def user_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def get_absolute_url(self):
-        return reverse('login')
+        return reverse('profile', kwargs = [self.id])
 
     def email_user(self, subject, message, fail=True):
         print(message)

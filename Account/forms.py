@@ -8,6 +8,77 @@ from django.shortcuts import get_object_or_404
 from .models import User
 
 
+
+class ResetPasswordValidateEmailForm(forms.Form):
+	email=forms.CharField(help_text="Enter your Mailfinder email")
+
+	def clean_email(self):
+		email = self.data.get('email')
+		validate_email(email)
+		try:
+			user = User.objects.get(email=email)
+		except User.DoesNotExist as e:
+			raise forms.ValidationError("Email user matched no MailFinder account")
+		
+		return email
+
+class ProfileForm(forms.Form):
+	id = forms.IntegerField()
+	first_name = forms.CharField(max_length=225)
+	last_name = forms.CharField(max_length=225)
+	email = forms.EmailField(max_length=255)
+	phone = forms.CharField(max_length=20)
+	gender = forms.IntegerField()
+	country = forms.CharField(max_length=3)
+	def clean(self):
+		cleaned_data = super(ProfileForm, self).clean()
+
+		# Get the user object
+		id = cleaned_data.get('id')
+		user = get_object_or_404(User, id=id)
+
+		email = cleaned_data.get('email')
+		phone = cleaned_data.get('phone')
+		gender = int(cleaned_data.get('gender'))
+
+		if gender not in [1,2]:
+			self.add_error('gender', 'Invalid gender')
+
+		email_exist = User.objects.filter(email=email).exclude(id=id).exists()
+		if email_exist:
+			self.add_error('email', 'This email has already been used')
+		
+		phone_exist = User.objects.filter(phone=phone).exclude(id=id).exists()
+		if phone_exist:
+			self.add_error('email', 'This phone number has already been used')
+		
+		return cleaned_data
+	
+	def save(self, commit=True):
+		cleaned_data = self.clean()
+		# Get the user object
+		id = cleaned_data.get('id')
+		user = get_object_or_404(User, id=id)
+
+		email = cleaned_data.get('email')
+		phone = cleaned_data.get('phone')
+		first_name = cleaned_data.get('first_name')
+		last_name = cleaned_data.get('last_name')
+		gender = cleaned_data.get('gender')
+		country = cleaned_data.get('country')
+
+		user.email = email
+		user.phone = phone
+		user.first_name = first_name
+		user.last_name = last_name
+		user.gender = gender
+		user.country = country
+
+		if commit:
+			user = user.save()
+		
+		return user
+
 class ForgetPasswordForm(forms.Form):
 	user_pk = forms.CharField(max_length=255)
 	new_password=forms.CharField(widget=forms.PasswordInput(
@@ -42,7 +113,7 @@ class ForgetPasswordForm(forms.Form):
 
 
 class ChangePasswordForm(forms.Form):
-	user_pk = forms.CharField(max_length=255)
+	user_pk = forms.IntegerField()
 	current_password=forms.CharField(widget=forms.PasswordInput(
 		attrs={'class': 'form__input'}),
 		help_text='Enter your current password here'
@@ -50,10 +121,6 @@ class ChangePasswordForm(forms.Form):
 	new_password=forms.CharField(widget=forms.PasswordInput(
 		attrs={'class': 'form__input'}),
 		help_text=password_validation.password_validators_help_text_html()
-	)
-	confirm_password=forms.CharField(widget=forms.PasswordInput(
-		attrs={'class': 'form__input'}),
-		help_text='Must be similar to first password to pass verification'
 	)
 
 	# Cleaning old password to check if provided password matches user password
@@ -69,14 +136,6 @@ class ChangePasswordForm(forms.Form):
 		ps1=self.cleaned_data.get("new_password")
 		password_validation.validate_password(ps1,None)
 		return ps1
-
-	"""Override clean on password2 level to compare similarities of password"""
-	def clean_confirm_password(self):
-		ps1=self.cleaned_data.get("new_password")
-		ps2=self.cleaned_data.get("confirm_password")
-		if (ps1 and ps2) and (ps1 != ps2):
-			raise forms.ValidationError("The passwords does not match")
-		return ps2
 
 	def save(self, commit=True):
 		user = get_object_or_404(User, pk=self.cleaned_data.get('user_pk'))

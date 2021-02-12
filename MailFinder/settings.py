@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Account',
     'Mobile',
+    'Scraper',
 ]
 
 AUTH_USER_MODEL = 'Account.User'
@@ -129,3 +130,6 @@ EMAIL_HOST_PASSWORD = 'wpcgtxfwmiqnlbwv'
 # DEFAULT_FROM_EMAIL = 'info@xcrowme.com'
 DEFAULT_FROM_EMAIL = 'mailfinder@gmail.com'
 DEFAULT_COMPANY_EMAIL = 'netrobeweb@gmail.com'
+
+# DEA KEYS
+# DEC_LOADER = "Scraper.utils.custom_email_domain_loader"

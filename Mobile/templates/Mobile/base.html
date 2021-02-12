@@ -59,10 +59,10 @@
 
 <div class="page-wrapper">
 
+  <div id="js_alerts"></div>
   {% if messages %}
     {% for message in messages %}
       <div class="alert alert-{{ message.tags }}">
-        <span class="close"><i class="fas fa-times"></i></span>
         {{message}}
       </div>
     {% endfor %}
@@ -70,14 +70,8 @@
   
 <!-- preloader start -->
 
-<!-- <div id="ht-preloader">
-  <div class="loader clear-loader"> <span>W</span>
-    <span>i</span>
-    <span>n</span>
-    <span>c</span>
-    <span>k</span>
-  </div>
-</div> -->
+{% block preloader %}
+{% endblock %}
 
 <!-- preloader end -->
 
@@ -98,26 +92,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
                 <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'home' %}" >Home</a>
-                  
                 </li>
-                  <!-- <li class="nav-item dropdown"> <a class="nav-link " href="#" >Company</a> -->
-                  
+                <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'about' %}" >About Us</a>
                 </li>
-                  <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'about' %}" >About Us</a>
-                  
+                <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'contact' %}" >Contact Us</a>
                 </li>
-                  <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'contact' %}" >Contact Us</a>
-                  
-                </li>
-                
-                 
-            
-                
-                
+                {% if request.user.is_authenticated %}
+                  <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'profile' %}" >My Account</a></li>
+                  <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'email_finder' %}" >Find emails</a></li>
+                {% endif %}
               </ul>
             </div>
-            <div class="d-sm-flex align-items-center justify-content-end"> <a class="btn-link" href="{% url 'login' %}">Login</a>  <a class="btn btn-primary btn-sm ms-3 d-sm-inline-block d-none" href="{% url 'register' %}">Sign Up</a> 
-          </div>
+            {% if not request.user.is_authenticated %}
+              <div class="d-sm-flex align-items-center justify-content-end">
+                <a class="btn-link" href="{% url 'login' %}">Login</a>
+                <a class="btn btn-primary btn-sm ms-3 d-sm-inline-block d-none" href="{% url 'register' %}">Sign Up</a>
+              </div>
+            {% else %}
+              <div class="d-sm-flex align-items-center justify-content-end">
+                <a class="btn-link" href="{% url 'logout' %}">Logout</a>
+              </div>
+            {% endif %}
           </nav>
           
         </div>

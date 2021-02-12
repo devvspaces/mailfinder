@@ -165,7 +165,7 @@ Border Radius
 Pre Loader
 ------------------------*/
 #ht-preloader {
-  background: #1e1d2d;
+  background: rgba(30,29,45,.89);
   bottom: 0;
   height: 100%;
   left: 0;
@@ -1611,4 +1611,25 @@ Other
   text-align: left;
   margin: .3rem 0 0 .3rem;
   font-size: .7rem;
+}
+#netrobe-found-it p{
+  font-size: 2rem;
+}
+#netrobe-email-formx{
+  background: var(--bs-gray-dark);
+  color: #fff;
+  padding: 1rem;
+  border-radius: .3rem;
+}
+#netrobe-email-formx h4{
+  color: #fff;
+}
+#netrobe-email-formx .form-group{
+  margin: 2rem 0;
+}
+#netrobe-email-formx p.lead{
+  font-size: .9rem;
+}
+.email_box_cls{
+  display: none;
 }
