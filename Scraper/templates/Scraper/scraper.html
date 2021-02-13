@@ -377,18 +377,18 @@
       <div class="row mt-7" id='netrobe-found-it'>
         <div class="col-lg-4 col-md-3">
           <h6>Found emails</h6>
-          <p class="count-number display-4 text-dark" data-to="17890" data-speed="2000">17,890</p>
+          <p id='email_count' class="count-number display-4 text-dark" data-to="0" data-speed="2000">0</p>
         </div>
         <div class="col-lg-4 col-md-3">
           <h6>Verified emails</h6>
-          <p class="count-number display-4 text-dark" data-to="17890" data-speed="2000">17,890</p>
+          <p id='valid_email_count' class="count-number display-4 text-dark" data-to="0" data-speed="2000">0</p>
         </div>
         <div class="col-lg-4 col-md-3">
           <h6>Get your emails</h6>
           <button class="btn btn-primary">Download CSV</button>
         </div>
       </div>
-      <div class="row p-2 mt-3">
+      <div class="row p-2 mt-3" id='email_table'>
         <table class="table table-hover">
           <thead>
             <tr class="table-dark">
@@ -399,18 +399,7 @@
             </tr>
           </thead>
           <tbody id="data_list">
-            <tr>
-              <td>ayan@gmail.com</td>
-              <td>gmail.com</td>
-              <td>Nicaraguar</td>
-              <td>98%</td>
-            </tr>
-            <tr>
-              <td>ayan@gmail.com</td>
-              <td>gmail.com</td>
-              <td>Nicaraguar</td>
-              <td>98%</td>
-            </tr>
+            
           </tbody>
         </table>
       </div>

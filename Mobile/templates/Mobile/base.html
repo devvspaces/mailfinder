@@ -86,8 +86,12 @@
         <div class="col"> 
           <nav class="navbar navbar-expand-lg navbar-light">
             <a class="navbar-brand logo text-primary mb-0 font-w-7" href="index.html">
-              <span class="text-dark font-w-4"></span>
+              <span class="text-dark font-w-4">MailFinder</span>
             </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
@@ -100,16 +104,17 @@
                 {% if request.user.is_authenticated %}
                   <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'profile' %}" >My Account</a></li>
                   <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'email_finder' %}" >Find emails</a></li>
+                  <li class="nav-item dropdown menu-logout"> <a class="nav-link " href="{% url 'logout' %}" >Logout</a></li>
                 {% endif %}
               </ul>
             </div>
             {% if not request.user.is_authenticated %}
-              <div class="d-sm-flex align-items-center justify-content-end">
+              <div class="extra_btn align-items-center justify-content-end">
                 <a class="btn-link" href="{% url 'login' %}">Login</a>
                 <a class="btn btn-primary btn-sm ms-3 d-sm-inline-block d-none" href="{% url 'register' %}">Sign Up</a>
               </div>
             {% else %}
-              <div class="d-sm-flex align-items-center justify-content-end">
+              <div class="extra_btn align-items-center justify-content-end">
                 <a class="btn-link" href="{% url 'logout' %}">Logout</a>
               </div>
             {% endif %}
@@ -174,8 +179,9 @@
               </li>
               <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'faq' %}">Faq</a>
               </li>
-              <li><a class="list-group-item-action text-light" href="{% url 'contact' %}">Contact Us</a>
-              </li>
+              <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'profile' %}">My Account</a></li>
+              <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'email_finder' %}">EmailFinder</a></li>
+              <li><a class="list-group-item-action text-light" href="{% url 'contact' %}">Contact Us</a></li>
             </ul>
           </div>
           <div class="col-12 col-sm-4 mt-6 mt-sm-0">

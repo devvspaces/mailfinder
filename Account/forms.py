@@ -39,7 +39,12 @@ class ProfileForm(forms.Form):
 
 		email = cleaned_data.get('email')
 		phone = cleaned_data.get('phone')
-		gender = int(cleaned_data.get('gender'))
+		gender = cleaned_data.get('gender')
+		try:
+			if gender == None:
+				self.add_error('gender','Select your gender')
+		except:
+			self.add_error('gender','Invalid value selected')
 
 		if gender not in [1,2]:
 			self.add_error('gender', 'Invalid gender')
