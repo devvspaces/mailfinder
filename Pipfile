@@ -12,6 +12,7 @@ pandas = "*"
 html5lib = "*"
 lxml = "*"
 googlesearch-python = "*"
+dnspython = "*"
 
 [dev-packages]
 
