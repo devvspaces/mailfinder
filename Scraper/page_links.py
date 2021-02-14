@@ -48,7 +48,7 @@ def get_emails_from_page(url):
 
             new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
             emails.update(new_emails) 
-            # print(emails)
+            print('\n\n',emails)
 
             for link in soup.find_all('a'):
                 # extract link url from the anchor

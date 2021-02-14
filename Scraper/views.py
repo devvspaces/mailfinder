@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView, TemplateView
 
 from .page_links import get_emails_from_page
+# from .search_google import searchGoogle
 
 from .models import EmailModel
 from .forms import EmailCallForm
@@ -93,6 +94,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         if finds.exists():
                             domain_set = domain_set+[i for i in finds]
                         got_emails = got_emails+get_emails_from_page(i)
+                        print('\n\n',got_emails,'\n\n')
                     
                     # All current database emails
                     db_emails = [i.email for i in domain_set]
