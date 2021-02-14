@@ -133,3 +133,7 @@ DEFAULT_COMPANY_EMAIL = 'netrobeweb@gmail.com'
 
 # DEA KEYS
 # DEC_LOADER = "Scraper.utils.custom_email_domain_loader"
+
+# GOOGLE SEARCH KEYS
+GOOGLE_SEARCH_API_KEY = "AIzaSyCgbUr7E_QlweVanuX5u4OU65YCc9MhVYM"
+GOOGLE_CSE_ID = "de1155bc82c628903"

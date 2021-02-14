@@ -7,9 +7,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView, TemplateView
 
+from .page_links import get_emails_from_page
+
 from .models import EmailModel
 from .forms import EmailCallForm
-# from .mixins import ManageSubscribe
 
 
 class EmailFinder(LoginRequiredMixin,FormView):
@@ -84,13 +85,29 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     domain_names = form.cleaned_data.get('domain_names')
                     domain_names = domain_names.split(' ')
                     domain_set = []
+                    got_emails = []
 
                     # Loop through domain_names, find all names that is similar to this
                     for i in domain_names:
                         finds = EmailModel.objects.filter(domain__iexact=i)
                         if finds.exists():
                             domain_set = domain_set+[i for i in finds]
+                        got_emails = got_emails+get_emails_from_page(i)
                     
+                    # All current database emails
+                    db_emails = [i.email for i in domain_set]
+                    
+                    # Loop through searched emails to add to result set
+                    for em in got_emails:
+                        if em not in db_emails:
+                            sp = em.split('@')
+                            name = sp[0]
+                            domain = sp[-1]
+
+                            # Adding to database
+                            obj = EmailModel.objects.create(email=em, name=name, domain=domain)
+                            domain_set.append(obj)
+
                     # Get serializable result set
                     result_set = self.get_serializable(domain_set)
                 elif formNum == 3:
