@@ -46,6 +46,8 @@ def get_emails_from_page(url):
 
             soup = BeautifulSoup(response.text, "lxml")
 
+            print(soup.prettify())
+
             new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
             emails.update(new_emails) 
             print('\n\n',emails)
