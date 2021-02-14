@@ -99,14 +99,17 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     
                     # Loop through searched emails to add to result set
                     for em in got_emails:
-                        if em not in db_emails:
-                            sp = em.split('@')
-                            name = sp[0]
-                            domain = sp[-1]
+                        try:
+                            if em not in db_emails:
+                                sp = em.split('@')
+                                name = sp[0]
+                                domain = sp[-1]
 
-                            # Adding to database
-                            obj = EmailModel.objects.create(email=em, name=name, domain=domain)
-                            domain_set.append(obj)
+                                # Adding to database
+                                obj = EmailModel.objects.create(email=em, name=name, domain=domain)
+                                domain_set.append(obj)
+                        except:
+                            pass
 
                     # Get serializable result set
                     result_set = self.get_serializable(domain_set)
