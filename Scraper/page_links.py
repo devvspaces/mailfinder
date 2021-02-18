@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 from urllib.parse import urlparse
 from collections import deque
 import re
+import time
 
 def get_emails_from_page(url):
     url = 'http://'+url if not url.startswith('http') else url
@@ -26,8 +27,12 @@ def get_emails_from_page(url):
 
     emails = set()
 
+    man=0
+
     # process urls one by one until we exhaust the queue
+    start = time.time()
     while len(new_urls):
+        man+=1
         # move url from the queue to processed url set
         url = new_urls.popleft()
         processed_urls.add(url)
@@ -46,11 +51,12 @@ def get_emails_from_page(url):
 
             soup = BeautifulSoup(response.text, "lxml")
 
-            print(soup.prettify())
-
             new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
             emails.update(new_emails) 
             print('\n\n',emails)
+
+            if (time.time()-start)>6000:
+                break
 
             for link in soup.find_all('a'):
                 # extract link url from the anchor
