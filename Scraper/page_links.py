@@ -36,53 +36,54 @@ def get_emails_from_page(url):
         # move url from the queue to processed url set
         url = new_urls.popleft()
         processed_urls.add(url)
-        # print the current url
-        # print("Processing %s" % url)
+        if url.find('#') == -1:
+            # print the current url
+            # print("Processing %s" % url)
 
-        try:
-            response = requests.get(url)
+            try:
+                response = requests.get(url)
 
-            # extract base url to resolve relative links
-            parts = urlsplit(url)
-            base = "{0.netloc}".format(parts)
-            strip_base = base.replace("www.", "")
-            base_url = "{0.scheme}://{0.netloc}".format(parts)
-            path = url[:url.rfind('/')+1] if '/' in parts.path else url
+                # extract base url to resolve relative links
+                parts = urlsplit(url)
+                base = "{0.netloc}".format(parts)
+                strip_base = base.replace("www.", "")
+                base_url = "{0.scheme}://{0.netloc}".format(parts)
+                path = url[:url.rfind('/')+1] if '/' in parts.path else url
 
-            soup = BeautifulSoup(response.text, "lxml")
+                soup = BeautifulSoup(response.text, "lxml")
 
-            new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
-            emails.update(new_emails) 
-            print('\n\n',emails, url)
+                new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
+                emails.update(new_emails) 
+                print('\n\n',emails, url)
 
-            if (time.time()-start)>(60*2):
-                break
+                if (time.time()-start)>(60*2):
+                    break
 
-            for link in soup.find_all('a'):
-                # extract link url from the anchor
-                anchor = link.attrs['href'] if 'href' in link.attrs else ''
+                for link in soup.find_all('a'):
+                    # extract link url from the anchor
+                    anchor = link.attrs['href'] if 'href' in link.attrs else ''
 
-                if anchor.startswith('/'):
-                    local_link = base_url + anchor
-                    local_urls.add(local_link)
-                elif strip_base in anchor:
-                    local_urls.add(anchor)
-                elif not anchor.startswith('http'):
-                    local_link = path + anchor
-                    local_urls.add(local_link)
-                else:
-                    foreign_urls.add(anchor)
-                
-            for i in local_urls:
-                if not i in new_urls and not i in processed_urls:
-                    new_urls.append(i)
-                
-            if not link in new_urls and not link in processed_urls:
-                new_urls.append(link)
-        except(requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
-            # add broken urls to it’s own set, then continue
-            broken_urls.add(url)
-            continue
+                    if anchor.startswith('/'):
+                        local_link = base_url + anchor
+                        local_urls.add(local_link)
+                    elif strip_base in anchor:
+                        local_urls.add(anchor)
+                    elif not anchor.startswith('http'):
+                        local_link = path + anchor
+                        local_urls.add(local_link)
+                    else:
+                        foreign_urls.add(anchor)
+                    
+                for i in local_urls:
+                    if not i in new_urls and not i in processed_urls:
+                        new_urls.append(i)
+                    
+                if not link in new_urls and not link in processed_urls:
+                    new_urls.append(link)
+            except(requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
+                # add broken urls to it’s own set, then continue
+                broken_urls.add(url)
+                continue
     
     return list(emails)
 
