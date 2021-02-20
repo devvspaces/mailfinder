@@ -106,6 +106,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         
                         # print('\n\n',got_emails,'\n\n')
                     
+                    print(got_emails, 'This are the emails before cleaning')
                     # Clean got emails
                     got_emails = clean_emails(got_emails)
                     print(got_emails, 'This are the clean emails')
