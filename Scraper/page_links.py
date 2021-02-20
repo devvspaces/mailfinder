@@ -55,7 +55,7 @@ def get_emails_from_page(url):
             emails.update(new_emails) 
             print('\n\n',emails, url)
 
-            if (time.time()-start)>1000:
+            if (time.time()-start)>(60*2):
                 break
 
             for link in soup.find_all('a'):
