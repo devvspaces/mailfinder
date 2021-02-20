@@ -455,8 +455,8 @@ Shadow
 .navbar-brand {
   margin-right: 0;
   padding: 0;
-  font-size: 2.5rem;
-  line-height: 2.5rem;
+  font-size: 2rem;
+  line-height: 2rem;
 }
 
 header .navbar-nav .nav-item {
@@ -546,7 +546,7 @@ header .navbar-nav .nav-item {
     padding: 15px 0;
   }
 
-  .navbar-toggler {
+  navbar.-toggler {
     background: none;
     height: 40px;
     width: 40px;
@@ -1392,18 +1392,75 @@ Other
   border-top-color: rgba(255, 255, 255, 0.2);
 }
 
+
+
+
+/* My codes */
+.netrobe-form-error-small{
+  display: block;
+  text-align: left;
+  margin: .3rem 0 0 .3rem;
+  font-size: .7rem;
+}
+#netrobe-found-it p{
+  font-size: 2rem;
+}
+#netrobe-email-formx{
+  background: var(--bs-gray-dark);
+  color: #fff;
+  padding: 1rem;
+  border-radius: .3rem;
+}
+#netrobe-email-formx h4{
+  color: #fff;
+}
+#netrobe-email-formx .form-group{
+  margin: 2rem 0;
+}
+#netrobe-email-formx p.lead{
+  font-size: .9rem;
+}
+.email_box_cls{
+  display: none;
+}
+
+.navbar-toggler{
+  display: none !important;
+}
+.menu-logout{
+  display: none !important;
+}
+.extra_btn{
+  display: flex !important;
+}
+
+
 /* ------------------------
    Responsive
 ------------------------*/
 @media (max-width:991.98px) {
+  .navbar-toggler{
+    display: block !important;
+  }
+  .menu-logout{
+    display: block !important;
+  }
+  .extra_btn{
+    display: none !important;
+  }
   .hero-shape3:before {
     height: 40%;
     top: -8%;
   }
-
+  #netrobe-email-formx{
+    margin-top: 3rem;
+  }
 }
 
 @media (max-width:767.98px) {
+  #email_table{
+    overflow-x: scroll;
+  }
   h1, .h1 {
     font-size: calc(1.575rem + 3.9vw);
   }
@@ -1602,34 +1659,4 @@ Other
 
 .flaticon-location:before {
   content: "\f11f";
-}
-
-
-/* My codes */
-.netrobe-form-error-small{
-  display: block;
-  text-align: left;
-  margin: .3rem 0 0 .3rem;
-  font-size: .7rem;
-}
-#netrobe-found-it p{
-  font-size: 2rem;
-}
-#netrobe-email-formx{
-  background: var(--bs-gray-dark);
-  color: #fff;
-  padding: 1rem;
-  border-radius: .3rem;
-}
-#netrobe-email-formx h4{
-  color: #fff;
-}
-#netrobe-email-formx .form-group{
-  margin: 2rem 0;
-}
-#netrobe-email-formx p.lead{
-  font-size: .9rem;
-}
-.email_box_cls{
-  display: none;
 }

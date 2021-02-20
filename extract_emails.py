@@ -3,7 +3,7 @@ import requests
 from urllib.parse import urlsplit
 from collections import deque
 from bs4 import BeautifulSoup
-import pandas as pd
+# import pandas as pd
 # from google.colab import files
 
 original_url = input("Enter the website url: ") 
@@ -34,6 +34,7 @@ while len(unscraped):
 
     new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
     emails.update(new_emails) 
+    print(emails)
 
     soup = BeautifulSoup(response.text, 'lxml')
 
@@ -53,10 +54,10 @@ while len(unscraped):
           if not link in unscraped and not link in scraped:
               unscraped.append(link)
 
-df = pd.DataFrame(emails, columns=["Email"])
-email = df.to_csv('email.csv', index=False)
-
-with open('email_to.csv','w') as f:
-    f.write(email)
+# df = pd.DataFrame(emails, columns=["Email"])
+# email = df.to_csv('email.csv', index=False)
+print(emails)
+# with open('email_to.csv','w') as f:
+#     f.write(email)
 
 # files.download("email.csv")

@@ -14,7 +14,7 @@ SECRET_KEY = '-mm$5=7=^6srk=d%@g@$++umss0qmako9)d3t5)ko5)d-yz4*e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -133,3 +133,7 @@ DEFAULT_COMPANY_EMAIL = 'netrobeweb@gmail.com'
 
 # DEA KEYS
 # DEC_LOADER = "Scraper.utils.custom_email_domain_loader"
+
+# GOOGLE SEARCH KEYS
+GOOGLE_SEARCH_API_KEY = "AIzaSyCgbUr7E_QlweVanuX5u4OU65YCc9MhVYM"
+GOOGLE_CSE_ID = "de1155bc82c628903"

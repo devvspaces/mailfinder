@@ -2,16 +2,19 @@ import time
 import random
 
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView, TemplateView
 
+from .page_links import get_emails_from_page
+# from .search_google import searchGoogle
+
 from .models import EmailModel
 from .forms import EmailCallForm
-# from .mixins import ManageSubscribe
 
 
-class EmailFinder(FormView):
+class EmailFinder(LoginRequiredMixin,FormView):
     template_name = 'Scraper/scraper.html'
     extra_context = {
         'title': 'Email finder'
@@ -22,6 +25,19 @@ class EmailFinder(FormView):
         context = self.get_context_data()
         context['form'] = self.form_class()
         return render(request, self.template_name, context)
+    
+    def get_serializable(self, email_set):
+        # Loop through email set add data to a dict
+        result_set = []
+        for obj in email_set:
+            new_dict = dict()
+            new_dict['email'] = obj.email
+            new_dict['domain'] = obj.domain
+            new_dict['country'] = obj.country
+            new_dict['status'] = str(random.randint(98,100))+'%'
+            result_set.append(new_dict)
+        
+        return result_set
     
     def post(self, request, *args, **kwargs):
         request = self.request
@@ -35,21 +51,77 @@ class EmailFinder(FormView):
                 if formNum == 4:
                     # Get random emails
                     n = EmailModel.objects.count()
-                    list_nums = random.sample(list(range(n)), 600)
+                    try:
+                        list_nums = random.sample(list(range(n)), 600)
+                    except ValueError:
+                        return JsonResponse({'formNum':0}, status=400)
 
                     # Loop through listnums, get obj and add data to a dict
                     result_set = []
                     for i in list_nums:
-                        obj = EmailModel.objects.get(pk=i)
-                        new_dict = dict()
-                        new_dict['email'] = obj.email
-                        new_dict['domain'] = obj.domain
-                        new_dict['country'] = obj.country
-                        new_dict['status'] = random.randint(98,100)
-                        result_set.append(new_dict)
-
+                        try:
+                            obj = EmailModel.objects.get(id=i)
+                            new_dict = dict()
+                            new_dict['email'] = obj.email
+                            new_dict['domain'] = obj.domain
+                            new_dict['country'] = obj.country
+                            new_dict['status'] = str(random.randint(98,100))+'%'
+                            result_set.append(new_dict)
+                        except EmailModel.DoesNotExist:
+                            pass
                 elif formNum == 1:
                     email_names = form.cleaned_data.get('email_names')
+                    email_names = email_names.split(' ')
+                    email_set = []
+
+                    # Loop through email_names, find all names that is similar to this
+                    for i in email_names:
+                        finds = EmailModel.objects.filter(name__icontains=i)
+                        if finds.exists():
+                            email_set = email_set+[i for i in finds]
+                    
+                    # Get serializable result set
+                    result_set = self.get_serializable(email_set)
+                elif formNum == 2:
+                    domain_names = form.cleaned_data.get('domain_names')
+                    domain_names = domain_names.split(' ')
+                    domain_set = []
+                    got_emails = []
+
+                    # Loop through domain_names, find all names that is similar to this
+                    for i in domain_names:
+                        finds = EmailModel.objects.filter(domain__iexact=i)
+                        if finds.exists():
+                            domain_set = domain_set+[i for i in finds]
+                        got_emails = got_emails+get_emails_from_page(i)
+                        print('\n\n',got_emails,'\n\n')
+                    
+                    # All current database emails
+                    db_emails = [i.email for i in domain_set]
+                    
+                    # Loop through searched emails to add to result set
+                    for em in got_emails:
+                        try:
+                            if em not in db_emails:
+                                sp = em.split('@')
+                                name = sp[0]
+                                domain = sp[-1]
+
+                                # Adding to database
+                                obj = EmailModel.objects.create(email=em, name=name, domain=domain)
+                                domain_set.append(obj)
+                        except:
+                            pass
+
+                    # Get serializable result set
+                    result_set = self.get_serializable(domain_set)
+                elif formNum == 3:
+                    country = form.cleaned_data.get('country')
+                    country_set = list(EmailModel.objects.filter(country__iexact=country))
+                    
+                    # Get serializable result set
+                    result_set = self.get_serializable(country_set)
+
                 return JsonResponse({'success':'no_errors', 'queryset':result_set}, status=200)
 
             # Show errors

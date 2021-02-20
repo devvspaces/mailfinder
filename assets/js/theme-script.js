@@ -80,7 +80,7 @@ function fullScreen() {
 function counter() {  
   $('.count-number').countTo({
     refreshInterval: 2
-  });   
+  });
 };
 
 
@@ -617,15 +617,23 @@ function conLookup(e) {
 }
 
 let data_list = document.querySelector('#data_list')
+let email_count = document.querySelector('#email_count')
+let valid_email_count = document.querySelector('#valid_email_count')
 
 function handleFormSuccess(data, textStatus, jqXHR){
   $('#ht-preloader').fadeOut();
-  alertErrors('Form submitted', status='success')
+  alertErrors('We have found some emails for you', status='success')
 
-  console.log(data)
+  // Clean data list element
+  $(data_list).children().remove()
 
   // Get queryset from data
   let queryset = data['queryset']
+
+  // Count emails and edit counting values
+  let num = queryset.length
+  email_count.innerText = num
+  valid_email_count.innerText = num
 
   // Loop querset, create tr and td elements to add to result body
   queryset.forEach(item=>{
