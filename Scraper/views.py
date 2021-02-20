@@ -108,6 +108,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     
                     # Clean got emails
                     got_emails = clean_emails(got_emails)
+                    print(got_emails, 'This are the clean emails')
                     
                     # All current database emails
                     db_emails = [i.email for i in domain_set]
