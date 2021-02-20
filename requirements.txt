@@ -1,0 +1,14 @@
+aiodns==2.0.0
+asgiref==3.3.1
+block-disposable-email==2.0.0
+cffi==1.14.4
+Django==3.1.6
+django-disposable-email-checker==2.0.2
+dnspython==2.2.0
+idna==2.10
+pycares==3.1.1
+pycparser==2.20
+pydnsbl==1.1.2
+pytz==2021.1
+six==1.15.0
+sqlparse==0.4.1
