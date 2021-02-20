@@ -135,13 +135,12 @@ class EmailPackageValidator:
                     server.mail('me@domain.com')
                     code, message = server.rcpt(str(addressToVerify))
                     print(code, message)
+                    server.quit()
                     if code == 250:
-                        server.quit()
                         return True
                 except TimeoutError:
                     print('one timeout '+str(i))
                     pass
-        server.quit()
         return False
 
 # Instance of validator
