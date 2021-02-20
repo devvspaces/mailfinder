@@ -138,8 +138,7 @@ class EmailPackageValidator:
                     server.quit()
                     if code == 250:
                         return True
-                except TimeoutError:
-                    print('one timeout '+str(i))
+                except (TimeoutError, OSError):
                     pass
         return False
 
