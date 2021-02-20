@@ -138,6 +138,8 @@ class EmailPackageValidator:
                     server.quit()
                     if code == 250:
                         return True
+                    elif code == 550:
+                        break
                 except (TimeoutError, OSError):
                     pass
         return False
