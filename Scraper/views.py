@@ -121,21 +121,21 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
-                        try:
-                            if em not in db_emails:
-                                # Validate the email using our master email validator
-                                val = email_validator(em)
-                                print(em, val, 'Validation status')
-                                if val:
-                                    sp = em.split('@')
-                                    name = sp[0]
-                                    domain = sp[-1]
+                        # try:
+                        if em not in db_emails:
+                            # Validate the email using our master email validator
+                            val = email_validator(em)
+                            print(em, val, 'Validation status')
+                            if val:
+                                sp = em.split('@')
+                                name = sp[0]
+                                domain = sp[-1]
 
-                                    # Adding to database
-                                    obj = EmailModel.objects.create(email=em, name=name, domain=domain)
-                                    domain_set.append(obj)
-                        except:
-                            pass
+                                # Adding to database
+                                obj = EmailModel.objects.create(email=em, name=name, domain=domain)
+                                domain_set.append(obj)
+                        # except:
+                        #     pass
 
                     # Get serializable result set
                     result_set = self.get_serializable(domain_set)
