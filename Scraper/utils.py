@@ -128,6 +128,7 @@ class EmailPackageValidator:
             server.set_debuglevel(0)
             addressToVerify = email
             for i in PORTS:
+                print('I ran this ports')
                 try:
                     server.connect(mx[1], port=i)
                     server.helo(host)
@@ -135,8 +136,8 @@ class EmailPackageValidator:
                     code, message = server.rcpt(str(addressToVerify))
                     print(code, message)
                     if code == 250:
+                        server.quit()
                         return True
-
                 except TimeoutError:
                     print('one timeout '+str(i))
                     pass
