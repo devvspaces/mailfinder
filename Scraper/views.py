@@ -88,6 +88,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     domain_names = domain_names.split(' ')
                     domain_set = []
                     got_emails = []
+                    clean_emails_list = []
 
                     # Loop through domain_names, find all names that is similar to this
                     for i in domain_names:
@@ -103,19 +104,23 @@ class EmailFinder(LoginRequiredMixin,FormView):
 
                         # Searching all pages in the site
                         got_emails = got_emails + get_emails_from_page(i)
+
+                        # Clean got emails
+                        print(got_emails, 'This are the emails before cleaning')
+                        clean_emails_list.extend(clean_emails(got_emails, i))
+                        got_emails = []
                         
                         # print('\n\n',got_emails,'\n\n')
                     
-                    print(got_emails, 'This are the emails before cleaning')
-                    # Clean got emails
-                    got_emails = clean_emails(got_emails)
-                    print(got_emails, 'This are the clean emails')
+                    # print(got_emails, 'This are the emails before cleaning')
+                    
+                    print(clean_emails_list, 'This are the clean emails')
                     
                     # All current database emails
                     db_emails = [i.email for i in domain_set]
                     
                     # Loop through searched emails to add to result set
-                    for em in got_emails:
+                    for em in clean_emails_list:
                         try:
                             if em not in db_emails:
                                 # Validate the email using our master email validator
