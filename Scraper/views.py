@@ -124,7 +124,8 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         try:
                             if em not in db_emails:
                                 # Validate the email using our master email validator
-                                val = email_validator(email)
+                                val = email_validator(em)
+                                print(em, val, 'Validation status')
                                 if val:
                                     sp = em.split('@')
                                     name = sp[0]
