@@ -36,7 +36,7 @@ def get_emails_from_page(url):
         # move url from the queue to processed url set
         url = new_urls.popleft()
         processed_urls.add(url)
-        if url.find('#') == -1:
+        if (url.find('#') == -1) or (url.find('@') != -1):
             # print the current url
             # print("Processing %s" % url)
 
