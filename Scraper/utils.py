@@ -14,7 +14,7 @@ from disposable_email_checker.validators import validate_disposable_email
 def clean_emails(emails=None, domain=''):
     if emails is None:
         emails = []
-    emails = [i.lower() for i in emails]
+    emails = list(set([i.lower() for i in emails]))
     processed=set()
     for i in emails:
         splited_email = i.split('@')

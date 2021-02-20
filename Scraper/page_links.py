@@ -41,7 +41,6 @@ def get_emails_from_page(url):
             # print("Processing %s" % url)
 
             try:
-                print(url)
                 response = requests.get(url)
 
                 # extract base url to resolve relative links

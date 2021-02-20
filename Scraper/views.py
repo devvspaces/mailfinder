@@ -98,6 +98,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         # Searching google for results
                         google_results = searchGoogle(i+' email')
                         got_emails = got_emails + get_emails_from_links(google_results)
+                        print(got_emails, 'This is the google results email')
 
                         # Searching all pages in the site
                         got_emails = got_emails + get_emails_from_page(i)
