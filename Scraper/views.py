@@ -7,11 +7,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView, TemplateView
 
-from .page_links import get_emails_from_page
-# from .search_google import searchGoogle
+from .page_links import get_emails_from_page, get_emails_from_links
+from .search_google import searchGoogle
 
 from .models import EmailModel
 from .forms import EmailCallForm
+from .utils import clean_emails, email_validator
 
 
 class EmailFinder(LoginRequiredMixin,FormView):
@@ -93,8 +94,18 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         finds = EmailModel.objects.filter(domain__iexact=i)
                         if finds.exists():
                             domain_set = domain_set+[i for i in finds]
-                        got_emails = got_emails+get_emails_from_page(i)
-                        print('\n\n',got_emails,'\n\n')
+
+                        # Searching google for results
+                        google_results = searchGoogle(i+' email')
+                        got_emails = got_emails + get_emails_from_links(google_results)
+
+                        # Searching all pages in the site
+                        got_emails = got_emails + get_emails_from_page(i)
+                        
+                        # print('\n\n',got_emails,'\n\n')
+                    
+                    # Clean got emails
+                    got_emails = clean_emails(got_emails)
                     
                     # All current database emails
                     db_emails = [i.email for i in domain_set]
@@ -103,13 +114,16 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     for em in got_emails:
                         try:
                             if em not in db_emails:
-                                sp = em.split('@')
-                                name = sp[0]
-                                domain = sp[-1]
+                                # Validate the email using our master email validator
+                                val = email_validator(email)
+                                if val:
+                                    sp = em.split('@')
+                                    name = sp[0]
+                                    domain = sp[-1]
 
-                                # Adding to database
-                                obj = EmailModel.objects.create(email=em, name=name, domain=domain)
-                                domain_set.append(obj)
+                                    # Adding to database
+                                    obj = EmailModel.objects.create(email=em, name=name, domain=domain)
+                                    domain_set.append(obj)
                         except:
                             pass
 

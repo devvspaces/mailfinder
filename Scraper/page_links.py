@@ -41,6 +41,7 @@ def get_emails_from_page(url):
             # print("Processing %s" % url)
 
             try:
+                print(url)
                 response = requests.get(url)
 
                 # extract base url to resolve relative links
@@ -56,7 +57,7 @@ def get_emails_from_page(url):
                 emails.update(new_emails) 
                 print('\n\n',emails, url)
 
-                if (time.time()-start)>(60*2):
+                if (time.time()-start)>(30):
                     break
 
                 for link in soup.find_all('a'):
@@ -92,4 +93,17 @@ def get_emails_from_page(url):
 # print('Processed urls\n',processed_urls)
 # print('Foreign urls\n',foreign_urls)
 # print('Broken urls\n',broken_urls)
+
+
+def get_emails_from_links(links=None):
+    emails = set()
+    if links is None:
+        links = []
     
+    for link in links:
+        response = requests.get(link)
+
+        new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
+        emails.update(new_emails)
+    
+    return list(emails)

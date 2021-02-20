@@ -10,6 +10,23 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from disposable_email_checker.validators import validate_disposable_email
 
+
+def clean_emails(emails=None, domain=''):
+    if emails is None:
+        emails = []
+    emails = [i.lower() for i in emails]
+    processed=set()
+    for i in emails:
+        splited_email = i.split('@')
+
+        # Check for required domains
+        if domain:
+            if splited_email[-1] == domain.lower():
+                processed.add(i)
+        
+    return list(processed)
+        
+
 def get_extra_deas():
     # This gets all the emails from dea list i have
     try:
@@ -31,11 +48,13 @@ class EmailPackageValidator:
         # First check the email syntax
         if self.is_email_valid(email):
             # Get the mx records
-            mx_records = self.resolve_mx_record(email):
+            mx_records = self.resolve_mx_record(email)
             if mx_records != False:
                 if self.is_disposable_email(email) == False:
-                    if self.email_ip_blacklist(email) == False:
-                        if self.check_email(emial):
+                    # Get the domain of the email
+                    domain = email.split('@')[-1]
+                    if self.email_ip_blacklist(domain) == False:
+                        if self.check_email(email, mx_records):
                             # The email is valid if it passes all this validation
                             return True
         
@@ -60,6 +79,7 @@ class EmailPackageValidator:
             for x in dns.resolver.resolve(domain, 'MX'):
                 mx_records.append(tuple(x.to_text().split(' ')))
 
+            # print(mx_records)
             return sorted(mx_records)
         except:
             pass
@@ -101,22 +121,27 @@ class EmailPackageValidator:
     def check_email(self, email, mxRecords):
         time.sleep(2)
         host = socket.gethostname()
+        PORTS=[25, 587, 465, 2525]
 
+        server = smtplib.SMTP()
         for mx in mxRecords:
-            try:
-                server = smtplib.SMTP()
-                server.set_debuglevel(0)
-                addressToVerify = email
-                server.connect(mx)
-                server.helo(host)
-                server.mail('me@domain.com')
-                code, message = server.rcpt(str(addressToVerify))
-                server.quit()
-                if code == 250:
-                    return True
-            except:
-                pass
-        
+            server.set_debuglevel(0)
+            addressToVerify = email
+            for i in PORTS:
+                try:
+                    server.connect(mx[1], port=i)
+                    server.helo(host)
+                    server.mail('me@domain.com')
+                    code, message = server.rcpt(str(addressToVerify))
+                    print(code, message)
+                    if code == 250:
+                        server.quit()
+                        return True
+                except TimeoutError:
+                    print('one timeout '+str(i))
+                    pass
+
+        server.quit()
         return False
 
 # Instance of validator
