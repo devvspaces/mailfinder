@@ -4,11 +4,24 @@ from django import forms
 
 
 class EmailCallForm(forms.Form):
+    job_title=forms.IntegerField(required=False)
     email_names=forms.CharField(max_length=255, required=False)
     domain_names=forms.CharField(max_length=300, required=False)
     country=forms.CharField(max_length=5, required=False)
     formNum=forms.IntegerField()
 
+    # def clean_job_title(self):
+    #     job_title = self.data.get('job_title')
+    #     formNum = self.data.get('formNum')
+
+    #     if formNum and int(formNum) == 1:
+    #         for i in job_title:
+    #             if i in punctuation:
+    #                 raise forms.ValidationError("The Job title you entered has a punctuation mark, it is not allowed")
+    #                 break
+		
+    #     return job_title
+    
     def clean_email_names(self):
         email_names = self.data.get('email_names')
         formNum = self.data.get('formNum')
@@ -16,7 +29,7 @@ class EmailCallForm(forms.Form):
         if formNum and int(formNum) == 1:
             for i in email_names:
                 if i in punctuation:
-                    raise forms.ValidationError("The name/s you entered has a punctuation mark, it is not allowed")
+                    raise forms.ValidationError("The name(s) you entered has a punctuation mark, it is not allowed")
                     break
 		
         return email_names

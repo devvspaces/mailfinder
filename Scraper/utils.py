@@ -11,6 +11,23 @@ from django.core.validators import validate_email
 from disposable_email_checker.validators import validate_disposable_email
 
 
+
+def email_format(emails=None):
+    if emails is None:
+        emails = []
+    emails = list(set([i.lower() for i in emails]))
+    processed=set()
+    for i in emails:
+        try:
+            validate_email(i)
+            processed.add(i)
+        except ValidationError:
+            pass
+    
+    return list(processed)
+        
+
+
 def clean_emails(emails=None, domain=''):
     if emails is None:
         emails = []
@@ -119,7 +136,7 @@ class EmailPackageValidator:
 
 
     def check_email(self, email, mxRecords):
-        time.sleep(2)
+        # time.sleep(2)
         host = socket.gethostname()
         PORTS=[25, 587, 465, 2525]
 

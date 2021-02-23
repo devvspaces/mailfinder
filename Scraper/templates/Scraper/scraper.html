@@ -40,23 +40,47 @@
         <div class="col-lg-6 col-md-10 ms-auto me-auto">
           <h4 class="mb-3">Select your preferred method</h4>
           <button class="btn btn-primary my-2 d-block email_box_btn" box_control="bulk_email">Bulk emails</button>
-          <button class="btn btn-primary my-2 d-block email_box_btn" box_control="account_name">Search Name</button>
+          <button class="btn btn-primary my-2 d-block email_box_btn" box_control="account_name">Search by Job title or Name</button>
           <button class="btn btn-primary my-2 d-block email_box_btn" box_control="domain_name">Search domain name</button>
           <button class="btn btn-primary my-2 d-block email_box_btn" box_control="country_name">Search Country name</button>
         </div>
         <div class="col-lg-6 col-md-10 ms-auto me-auto email_box_cls" id="netrobe-email-formx" email_box="account_name">
           <h4 class="mb-3">Search by Email name</h4>
-          <p class="lead">You should provide the names relating to the emails you want to get.
-            The emails returned will be similar to the name/s you provided, for example if you provide name <em>matthew</em>
-            you will get emails like <em>matthew123@gmail.com or jakematthew@yahoo.com</em>. You can also provide space separated
-            names like <em>john mike sam peter sarah</em>, and we will get emails relating to those names for you.
+          <p class="lead">Enter the Job title of the emails you want to get and you can include names to narrow to search to
+            find specific emails for you.
           </p>
           <form id="contact-form1" method="post">
             {% csrf_token %}
             <div class="messages"></div>
             <input class="d-none" name="formNum" type="hidden" value="1">
             <div class="form-group">
-              <input value="{% if form.email_names.value %}{{form.email_names.value}}{% endif %}" id="form_name" type="text" name="email_names" class="form-control" placeholder="Email names" required="required" data-error="A name is required.">
+              <!-- <input list="jobTitles" value="{% if form.job_title.value %}{{form.job_title.value}}{% endif %}" id="form_name" type="text" name="job_title" class="form-control" placeholder="Job title" required="required" data-error="A Job title is required."> -->
+              <select class="form-control" name="job_title">
+                {% for a,b in jobs %}
+                  {% if a != '0' %}
+                    <option value={{a}}>{{b}}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <div class="help-block with-errors"></div>
+              <!-- <datalist id="jobTitles">
+                <option value="Engineer">
+                <option value="Banker">
+                <option value="Computer Engineer">
+                <option value="Teacher">
+                <option value="Lecturer">
+                <option value="Librarian">
+                <option value="Plumber">
+                <option value="Real Estate Agent">
+              </datalist> -->
+              {% if form.job_title.errors %}
+                {% for i in form.job_title.errors %}
+                  <small class="text-danger netrobe-form-error-small">{{i}}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="form-group">
+              <input value="{% if form.email_names.value %}{{form.email_names.value}}{% endif %}" id="form_name" type="text" name="email_names" class="form-control" placeholder="Name(s)">
               <div class="help-block with-errors"></div>
               {% if form.email_names.errors %}
                 {% for i in form.email_names.errors %}
@@ -385,7 +409,7 @@
         </div>
         <div class="col-lg-4 col-md-3">
           <h6>Get your emails</h6>
-          <button class="btn btn-primary">Download CSV</button>
+          <button id="download_csv" class="btn btn-primary">Download CSV</button>
         </div>
       </div>
       <div class="row p-2 mt-3" id='email_table'>
@@ -395,7 +419,7 @@
               <th scope="col">Email</th>
               <th scope="col">Domain</th>
               <th scope="col">Country</th>
-              <th scope="col">Status</th>
+              <th scope="col">Verified</th>
             </tr>
           </thead>
           <tbody id="data_list">

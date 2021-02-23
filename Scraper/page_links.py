@@ -7,6 +7,11 @@ from collections import deque
 import re
 import time
 
+
+from .models import ScrapedLink
+
+
+
 def get_emails_from_page(url):
     url = 'http://'+url if not url.startswith('http') else url
 
@@ -39,7 +44,6 @@ def get_emails_from_page(url):
         if (url.find('#') == -1) or (url.find('@') != -1):
             # print the current url
             # print("Processing %s" % url)
-
             try:
                 response = requests.get(url)
 
@@ -53,10 +57,19 @@ def get_emails_from_page(url):
                 soup = BeautifulSoup(response.text, "lxml")
 
                 new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
-                emails.update(new_emails) 
+                emails.update(new_emails)
                 print('\n\n',emails, url)
 
-                if (time.time()-start)>(30):
+
+                # Check if the url have been added if not then add it
+                try:
+                    obj = ScrapedLink.objects.get(link=url)
+                    # Updated the last scraped date
+                    obj.save()
+                except ScrapedLink.DoesNotExist:
+                    obj = ScrapedLink.objects.create(link=url)
+
+                if (time.time()-start)>(10):
                     break
 
                 for link in soup.find_all('a'):
@@ -76,10 +89,24 @@ def get_emails_from_page(url):
                     
                 for i in local_urls:
                     if not i in new_urls and not i in processed_urls:
-                        new_urls.append(i)
+                        # Check if the url have been added if not then add it
+                        try:
+                            obj = ScrapedLink.objects.get(link=i)
+                            if obj.need_scrape() == True:
+                                new_urls.append(i)
+                        except ScrapedLink.DoesNotExist:
+                            obj = ScrapedLink.objects.create(link=i)
+                            new_urls.append(i)
                     
                 if not link in new_urls and not link in processed_urls:
-                    new_urls.append(link)
+                    # Check if the url have been added if not then add it
+                    try:
+                        obj = ScrapedLink.objects.get(link=link)
+                        if obj.need_scrape() == True:
+                            new_urls.append(link)
+                    except ScrapedLink.DoesNotExist:
+                        obj = ScrapedLink.objects.create(link=link)
+                        new_urls.append(link)
             except(TypeError, requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
                 # add broken urls to it’s own set, then continue
                 broken_urls.add(url)
@@ -100,9 +127,19 @@ def get_emails_from_links(links=None):
         links = []
     
     for link in links:
-        response = requests.get(link)
+        try:
+            response = requests.get(link)
+            new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
+            emails.update(new_emails)
 
-        new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
-        emails.update(new_emails)
+            # Check if the link have been added if not then add it
+            try:
+                obj = ScrapedLink.objects.get(link=link)
+                # Updated the last scraped date
+                obj.save()
+            except ScrapedLink.DoesNotExist:
+                obj = ScrapedLink.objects.create(link=link)
+        except(TypeError, requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
+            continue
     
     return list(emails)

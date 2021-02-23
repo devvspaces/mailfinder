@@ -10,9 +10,9 @@ from django.views.generic import FormView, CreateView, TemplateView
 from .page_links import get_emails_from_page, get_emails_from_links
 from .search_google import searchGoogle
 
-from .models import EmailModel
+from .models import EmailModel, JOBS
 from .forms import EmailCallForm
-from .utils import clean_emails, email_validator
+from .utils import clean_emails, email_validator, email_format
 
 
 class EmailFinder(LoginRequiredMixin,FormView):
@@ -25,6 +25,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context['form'] = self.form_class()
+        context['jobs'] = JOBS
         return render(request, self.template_name, context)
     
     def get_serializable(self, email_set):
@@ -35,7 +36,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
             new_dict['email'] = obj.email
             new_dict['domain'] = obj.domain
             new_dict['country'] = obj.country
-            new_dict['status'] = str(random.randint(98,100))+'%'
+            new_dict['status'] = obj.verified
             result_set.append(new_dict)
         
         return result_set
@@ -66,20 +67,60 @@ class EmailFinder(LoginRequiredMixin,FormView):
                             new_dict['email'] = obj.email
                             new_dict['domain'] = obj.domain
                             new_dict['country'] = obj.country
-                            new_dict['status'] = str(random.randint(98,100))+'%'
+                            new_dict['status'] = obj.verified
                             result_set.append(new_dict)
                         except EmailModel.DoesNotExist:
                             pass
                 elif formNum == 1:
+                    job_title = int(form.cleaned_data.get('job_title'))
                     email_names = form.cleaned_data.get('email_names')
-                    email_names = email_names.split(' ')
                     email_set = []
-
-                    # Loop through email_names, find all names that is similar to this
+                    if len(email_names.replace(' ','')) > 0:
+                        email_names_list = email_names.split(' ')
+                        # Loop through email_names, find all names that is similar to this
+                        for i in email_names_list:
+                            finds = EmailModel.objects.filter(name__icontains=i)
+                            if finds.exists():
+                                email_set = email_set+[i for i in finds]
+                    
+                    # Search the database to get emails with the same job title
+                    finds = EmailModel.objects.filter(job_title=job_title)
+                    if finds.exists():
+                        email_set = email_set+[i for i in finds]
+                    
+                    # Search google for names and job title
+                    email_names = email_names.split(' ')
+                    searching_links = set()
                     for i in email_names:
-                        finds = EmailModel.objects.filter(name__icontains=i)
-                        if finds.exists():
-                            email_set = email_set+[i for i in finds]
+                        searching_links.update(set(searchGoogle(f'{JOBS[job_title][1]} {i} email')))
+                    
+                    # Get all emails crawled from links
+                    got_emails = get_emails_from_links(searching_links)
+                    print(got_emails)
+
+                    # Make sure all emails are in correct format
+                    got_emails = email_format(got_emails)
+
+                    # All current database emails
+                    db_emails = [i.email for i in email_set]
+                    
+                    # Loop through searched emails to add to result set
+                    for em in got_emails:
+                        # try:
+                        if EmailModel.objects.filter(email=em).exists() == False:
+                            print('Started the new emails ', em)
+                            # Validate the email using our master email validator
+                            val = email_validator.email_validate(em)
+                            print(em, val, 'Validation status')
+                            sp = em.split('@')
+                            name = sp[0]
+                            domain = sp[-1]
+
+                            # Adding to database
+                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val, job_title=job_title)
+                            email_set.append(obj)
+                        # except:
+                        #     pass
                     
                     # Get serializable result set
                     result_set = self.get_serializable(email_set)
@@ -97,7 +138,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                             domain_set = domain_set+[i for i in finds]
 
                         # Searching google for results
-                        google_results = searchGoogle(i+' email')
+                        google_results = searchGoogle(i+' contact info')
                         print(google_results, 'This are the links google_got')
                         got_emails = got_emails + get_emails_from_links(google_results)
                         print(got_emails, 'This is the google results email')
@@ -105,9 +146,9 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         # Searching all pages in the site
                         got_emails = got_emails + get_emails_from_page(i)
 
-                        # Clean got emails
+                        # Check their format then Clean got emails
                         print(got_emails, 'This are the emails before cleaning')
-                        clean_emails_list.extend(clean_emails(got_emails, i))
+                        clean_emails_list.extend(clean_emails(email_format(got_emails), i))
                         got_emails = []
                         
                         # print('\n\n',got_emails,'\n\n')
@@ -127,14 +168,13 @@ class EmailFinder(LoginRequiredMixin,FormView):
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
                             print(em, val, 'Validation status')
-                            if val:
-                                sp = em.split('@')
-                                name = sp[0]
-                                domain = sp[-1]
+                            sp = em.split('@')
+                            name = sp[0]
+                            domain = sp[-1]
 
-                                # Adding to database
-                                obj = EmailModel.objects.create(email=em, name=name, domain=domain)
-                                domain_set.append(obj)
+                            # Adding to database
+                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                            domain_set.append(obj)
                         # except:
                         #     pass
 

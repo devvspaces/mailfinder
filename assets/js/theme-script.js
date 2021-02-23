@@ -620,7 +620,19 @@ let data_list = document.querySelector('#data_list')
 let email_count = document.querySelector('#email_count')
 let valid_email_count = document.querySelector('#valid_email_count')
 
+// Let's create the csv content and add top data
+let csvContent = "data:text/csv;charset=utf-8,";
+let rowArray = ['Email','Domain','Country','Verified']
+let row = rowArray.join(",");
+csvContent += row + "\r\n";
+
 function handleFormSuccess(data, textStatus, jqXHR){
+  // Reinstantiate csv content
+  let csvContent = "data:text/csv;charset=utf-8,";
+  let rowArray = ['Email','Domain','Country','Verified']
+  let row = rowArray.join(",");
+  csvContent += row + "\r\n";
+
   $('#ht-preloader').fadeOut();
   alertErrors('We have found some emails for you', status='success')
 
@@ -632,8 +644,8 @@ function handleFormSuccess(data, textStatus, jqXHR){
 
   // Count emails and edit counting values
   let num = queryset.length
-  email_count.innerText = num
-  valid_email_count.innerText = num
+  email_count.innerHTML = num;
+  let num_verified = 0
 
   // Loop querset, create tr and td elements to add to result body
   queryset.forEach(item=>{
@@ -642,12 +654,38 @@ function handleFormSuccess(data, textStatus, jqXHR){
     let keys = Object.keys(item)
     for (const key of keys){
       let td = document.createElement('td')
-      let text = document.createTextNode(item[key])
-      td.appendChild(text)
+      if (key == 'status'){
+        let iconSpan = document.createElement('span')
+        let icon = document.createElement('i')
+        if(item[key]==true){
+          icon.classList.add('las', 'la-check')
+          iconSpan.classList.add('text-success')
+          // Increase the verified amount
+          num_verified++;
+          console.log(num_verified)
+        } else {
+          icon.classList.add('las','la-times')
+          iconSpan.classList.add('text-danger')
+        }
+        iconSpan.appendChild(icon)
+        td.appendChild(iconSpan)
+      } else{
+        let text = document.createTextNode(item[key])
+        td.appendChild(text)
+      }
       tr.appendChild(td)
     }
     data_list.appendChild(tr)
+
+    // Adding the data to the csv file
+    let rowArray = Object.values(item)
+    let row = rowArray.join(",");
+    csvContent += row + "\r\n";
+
   })
+
+  // Set amount of verified emails
+  valid_email_count.innerHTML = num_verified;
 }
 
 function handleFormError(jqXHR, textStatus){
@@ -687,4 +725,18 @@ function handleFormError(jqXHR, textStatus){
   } else if (formNum == 4){
 
   }
+}
+
+// Code to make download csv file button download csv
+let download_csv = document.querySelector('#download_csv')
+download_csv.onclick = function(e) {
+  var encodedUri = encodeURI(csvContent);
+  var link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "MailFinder_emails.csv");
+  link.style.display = 'none';
+  document.body.appendChild(link); // Required for FF
+
+  link.click(); // This will download the data file named "my_data.csv".
+  alert('Downloading Started')
 }

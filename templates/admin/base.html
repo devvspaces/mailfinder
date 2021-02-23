@@ -1,0 +1,61 @@
+{% extends 'admin/base.html' %}
+
+{% block extrahead %}{{ block.super }}
+<style>
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: #a6aaad;
+}
+#header {
+    background: #2f2f41;
+    color: #01a479;
+}
+.module h2, .module caption, .inline-group h2 {
+    background: #2f2f41;
+    color: #a6aaad;
+}
+div.breadcrumbs {
+    background: #515168;
+    color: #c4dce8;
+}
+div.breadcrumbs, div.breadcrumbs a:focus, div.breadcrumbs a:hover {
+    color: #69d2b6;
+}
+#nav-sidebar .current-model {
+    background: #88889e;
+}
+.module table {
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+#changelist-filter li.selected {
+    border-left: 5px solid #01a479;
+}
+#changelist-filter li.selected a {
+    color: #01a479;
+}
+a:link, a:visited {
+    color: #2f2f41;
+    transition: .3s;
+}
+a:hover {
+    color: #01a479;
+}
+.current-model a:hover{
+    color: initial;
+}
+.object-tools a:focus, .object-tools a:hover {
+    background-color: #2f2f41;
+}
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: #515168;
+    transition: .3s;
+}
+.button:active, input[type=submit]:active, input[type=button]:active, .button:focus, input[type=submit]:focus, input[type=button]:focus, .button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background: #2f2f41;
+}
+.submit-row [name="_save"]{
+    background-color: #01a479 !important;
+}
+</style>
+{% endblock %}
