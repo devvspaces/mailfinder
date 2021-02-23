@@ -39,7 +39,7 @@ class EmailModel(models.Model):
 
 
 class ScrapedLink(models.Model):
-    link = models.URLField(default='N/A')
+    link = models.URLField(default='N/A', max_length=500)
     last_scraped = models.DateTimeField(auto_now = True, blank=True)
 
     def need_scrape(self):
