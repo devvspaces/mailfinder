@@ -24,15 +24,19 @@ def google_search(search_term, **kwargs):
         service = build("customsearch", "v1", developerKey=settings.GOOGLE_SEARCH_API_KEY)
         res = service.cse()
         res = res.list(q=search_term, cx=settings.GOOGLE_CSE_ID, **kwargs)
-    res = res.execute()
+    try:
+        res = res.execute()
+    except GoogleHttpError:
+        return None
     return res
 
 def searchGoogle(search, num_links=20):
     links = set()
     nums = [(i*10)+1 for i in range(num_links)]
-    try:
-        for i in nums:
-            result = google_search(search, num=10, start=i)
+    
+    for i in nums:
+        result = google_search(search, num=10, start=i)
+        if result_links is not None:
             try:
                 for i in result['items']:
                     links.add(i['link'])
@@ -51,6 +55,6 @@ def searchGoogle(search, num_links=20):
                     break
             except:
                 break
-        return list(links)
-    except GoogleHttpError:
-        return searchBing(search, num_links)
+            return list(links)
+        else:
+            return searchBing(search, num_links)
