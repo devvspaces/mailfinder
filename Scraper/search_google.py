@@ -36,7 +36,7 @@ def searchGoogle(search, num_links=20):
     
     for i in nums:
         result = google_search(search, num=10, start=i)
-        if result_links is not None:
+        if result is not None:
             try:
                 for i in result['items']:
                     links.add(i['link'])
