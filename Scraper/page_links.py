@@ -58,7 +58,6 @@ def get_emails_from_page(url):
 
                 new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", response.text, re.I))
                 emails.update(new_emails)
-                print('\n\n',emails, url)
 
 
                 # Check if the url have been added if not then add it

@@ -5,10 +5,16 @@ from disposable_email_checker.emails import email_domain_loader
 import pydnsbl
 import socket
 import smtplib
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlencode, urlunparse
+from urllib.request import urlopen, Request
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from disposable_email_checker.validators import validate_disposable_email
+
+from .models import EmailModel, ScrapedLink
 
 
 
@@ -163,3 +169,69 @@ class EmailPackageValidator:
 
 # Instance of validator
 email_validator = EmailPackageValidator()
+
+
+
+
+def searchBing(query, num_links=20):
+    result_links = set()
+    # Parsing the query and making the request
+    url = urlunparse(("https", "www.bing.com", "/search", "", urlencode({"q": query}), ""))
+    custom_user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0"
+    req = Request(url, headers={"User-Agent": custom_user_agent})
+    page = urlopen(req)
+
+    # Converting the response to a soup and getting result links from it and next pages
+    soup = BeautifulSoup(page.read(), 'lxml')
+    
+    # Getting result links
+    b_results = soup.find('ol', id='b_results')
+    links = b_results.findAll("a")
+    for link in links:
+        try:
+            get_link = link["href"]
+            if (get_link.startswith('http') or get_link.startswith('www')) and (not get_link.startswith('/')):
+                result_links.add(link["href"])
+        except KeyError:
+            pass
+    
+    next_page_number=1
+    
+    
+    while len(result_links) < num_links:
+        # Getting next pages
+        try:
+            q=[urlencode({"q": query}),urlencode({"first": str(next_page_number)+'1'}),urlencode({"FORM": 'PERE'+(str(next_page_number-1) if (next_page_number-1) > 0 else '')})]
+            next_page_link = '&'.join(q)
+            # print(q)
+        except:
+            break
+        
+        # Scrape the contents of the new url
+        try:
+            url = urlunparse(("https", "www.bing.com", "/search", "", next_page_link, ""))
+            custom_user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0"
+            req = Request(url, headers={"User-Agent": custom_user_agent})
+            page = urlopen(req)
+            soup = BeautifulSoup(page.read(), "lxml")
+
+            # Getting result links
+            b_results = soup.find('ol', id='b_results')
+            links = b_results.findAll("a")
+            for link in links:
+                try:
+                    get_link = link["href"]
+                    if (get_link.startswith('http') or get_link.startswith('www')) and (not get_link.startswith('/')):
+                        obj = ScrapedLink.objects.filter(link__exact=get_link).first()
+                        if obj:
+                            if obj.need_scrape():
+                                result_links.add(get_link)
+                        else:
+                            result_links.add(get_link)
+                except KeyError:
+                    pass
+            next_page_number+=1
+        except(requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
+            break
+
+    return list(result_links)

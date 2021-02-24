@@ -138,7 +138,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                             domain_set = domain_set+[i for i in finds]
 
                         # Searching google for results
-                        google_results = searchGoogle(i+' contact info')
+                        google_results = searchGoogle(i+' email')
                         print(google_results, 'This are the links google_got')
                         got_emails = got_emails + get_emails_from_links(google_results)
                         print(got_emails, 'This is the google results email')
@@ -163,7 +163,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
                         # try:
-                        if em not in db_emails:
+                        if EmailModel.objects.filter(email=em).exists() == False:
                             print('Started the new emails ', em)
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
