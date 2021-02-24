@@ -628,9 +628,9 @@ csvContent += row + "\r\n";
 
 function handleFormSuccess(data, textStatus, jqXHR){
   // Reinstantiate csv content
-  let csvContent = "data:text/csv;charset=utf-8,";
-  let rowArray = ['Email','Domain','Country','Verified']
-  let row = rowArray.join(",");
+  csvContent = "data:text/csv;charset=utf-8,";
+  rowArray = ['Email','Domain','Country','Verified']
+  row = rowArray.join(",");
   csvContent += row + "\r\n";
 
   $('#ht-preloader').fadeOut();
@@ -662,7 +662,6 @@ function handleFormSuccess(data, textStatus, jqXHR){
           iconSpan.classList.add('text-success')
           // Increase the verified amount
           num_verified++;
-          console.log(num_verified)
         } else {
           icon.classList.add('las','la-times')
           iconSpan.classList.add('text-danger')
