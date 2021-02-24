@@ -163,7 +163,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
                         # try:
-                        if em not in db_emails:
+                        if EmailModel.objects.filter(email=em).exists() == False:
                             print('Started the new emails ', em)
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
