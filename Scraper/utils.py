@@ -181,6 +181,9 @@ def searchBing(query, num_links=20):
     req = Request(url, headers={"User-Agent": custom_user_agent})
     page = urlopen(req)
 
+    # Setting list of links to avoid
+    avoid = ['chrome.google.com','www.microsofttranslator.com']
+
     # Converting the response to a soup and getting result links from it and next pages
     soup = BeautifulSoup(page.read(), 'lxml')
     
@@ -191,7 +194,11 @@ def searchBing(query, num_links=20):
         try:
             get_link = link["href"]
             if (get_link.startswith('http') or get_link.startswith('www')) and (not get_link.startswith('/')):
-                result_links.add(link["href"])
+                for i in avoid:
+                    if get_link.find(i) != -1:
+                        break
+                else:
+                    result_links.add(link["href"])
         except KeyError:
             pass
     
@@ -227,7 +234,11 @@ def searchBing(query, num_links=20):
                             if obj.need_scrape():
                                 result_links.add(get_link)
                         else:
-                            result_links.add(get_link)
+                            for i in avoid:
+                                if get_link.find(i) != -1:
+                                    break
+                            else:
+                                result_links.add(get_link)
                 except KeyError:
                     pass
             next_page_number+=1
