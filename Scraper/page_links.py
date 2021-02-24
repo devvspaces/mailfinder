@@ -7,6 +7,7 @@ from collections import deque
 import re
 import time
 
+from django import db
 
 from .models import ScrapedLink
 
@@ -137,7 +138,10 @@ def get_emails_from_links(links=None):
                 # Updated the last scraped date
                 obj.save()
             except ScrapedLink.DoesNotExist:
-                obj = ScrapedLink.objects.create(link=link)
+                try:
+                    obj = ScrapedLink.objects.create(link=link)
+                except db.utils.DataError:
+                    pass
         except(TypeError, requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
             continue
     
