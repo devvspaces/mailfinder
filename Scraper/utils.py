@@ -148,24 +148,23 @@ class EmailPackageValidator:
         # PORTS=[25, 587, 465, 2525]
 
         server = smtplib.SMTP()
-        for mx in mxRecords:
-            server.set_debuglevel(0)
-            addressToVerify = email
-            for i in PORTS:
-                print('I ran this ports')
-                try:
-                    server.connect(mx[1], port=i)
-                    server.helo(host)
-                    server.mail('me@domain.com')
-                    code, message = server.rcpt(str(addressToVerify))
-                    print(code, message)
-                    server.quit()
-                    if code == 250:
-                        return True
-                    elif code == 550:
-                        break
-                except (TimeoutError, OSError):
-                    pass
+        server.set_debuglevel(0)
+        addressToVerify = email
+        for i in PORTS:
+            print('I ran this ports')
+            try:
+                server.connect(mxRecords[0][1], port=i)
+                server.helo(host)
+                server.mail('me@domain.com')
+                code, message = server.rcpt(str(addressToVerify))
+                print(code, message)
+                server.quit()
+                if code == 250:
+                    return True
+                elif code == 550:
+                    break
+            except (TimeoutError, OSError):
+                pass
         return False
 
 # Instance of validator
