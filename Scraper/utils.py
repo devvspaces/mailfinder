@@ -144,7 +144,8 @@ class EmailPackageValidator:
     def check_email(self, email, mxRecords):
         # time.sleep(2)
         host = socket.gethostname()
-        PORTS=[25, 587, 465, 2525]
+        PORTS=[25, 587]
+        # PORTS=[25, 587, 465, 2525]
 
         server = smtplib.SMTP()
         for mx in mxRecords:
