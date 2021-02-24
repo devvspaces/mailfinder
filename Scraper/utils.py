@@ -182,7 +182,7 @@ def searchBing(query, num_links=20):
     page = urlopen(req)
 
     # Setting list of links to avoid
-    avoid = ['chrome.google.com','www.microsofttranslator.com']
+    avoid = ['chrome.google.com','www.microsofttranslator.com','play.google.com']
 
     # Converting the response to a soup and getting result links from it and next pages
     soup = BeautifulSoup(page.read(), 'lxml')

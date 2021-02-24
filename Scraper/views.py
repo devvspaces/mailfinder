@@ -136,6 +136,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         finds = EmailModel.objects.filter(domain__iexact=i)
                         if finds.exists():
                             domain_set = domain_set+[i for i in finds]
+                            print('This is the first domain set', domain_set)
 
                         # Searching google for results
                         google_results = searchGoogle(i+' email')
@@ -162,6 +163,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
+                        print(em, 'Looping through the emails')
                         # try:
                         if EmailModel.objects.filter(email=em).exists() == False:
                             print('Started the new emails ', em)
