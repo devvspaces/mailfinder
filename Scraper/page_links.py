@@ -87,26 +87,26 @@ def get_emails_from_page(url):
                     else:
                         foreign_urls.add(anchor)
                     
-                for i in local_urls:
-                    if not i in new_urls and not i in processed_urls:
+                    for i in local_urls:
+                        if not i in new_urls and not i in processed_urls:
+                            # Check if the url have been added if not then add it
+                            try:
+                                obj = ScrapedLink.objects.get(link=i)
+                                if obj.need_scrape() == True:
+                                    new_urls.append(i)
+                            except ScrapedLink.DoesNotExist:
+                                obj = ScrapedLink.objects.create(link=i)
+                                new_urls.append(i)
+                        
+                    if not link in new_urls and not link in processed_urls:
                         # Check if the url have been added if not then add it
                         try:
-                            obj = ScrapedLink.objects.get(link=i)
+                            obj = ScrapedLink.objects.get(link=link)
                             if obj.need_scrape() == True:
-                                new_urls.append(i)
+                                new_urls.append(link)
                         except ScrapedLink.DoesNotExist:
-                            obj = ScrapedLink.objects.create(link=i)
-                            new_urls.append(i)
-                    
-                if not link in new_urls and not link in processed_urls:
-                    # Check if the url have been added if not then add it
-                    try:
-                        obj = ScrapedLink.objects.get(link=link)
-                        if obj.need_scrape() == True:
+                            obj = ScrapedLink.objects.create(link=link)
                             new_urls.append(link)
-                    except ScrapedLink.DoesNotExist:
-                        obj = ScrapedLink.objects.create(link=link)
-                        new_urls.append(link)
             except(TypeError, requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
                 # add broken urls to it’s own set, then continue
                 broken_urls.add(url)
