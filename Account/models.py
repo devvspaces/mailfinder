@@ -78,6 +78,7 @@ class User(AbstractBaseUser):
     phone = models.CharField(max_length=20, unique=True)
     gender = models.CharField(choices=GENDER, max_length=1)
     country = models.CharField(max_length=3)
+    verified_emails = models.IntegerField(default=90)
 
     # Admin fields
     active = models.BooleanField(default=False)

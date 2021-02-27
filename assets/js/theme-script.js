@@ -558,16 +558,30 @@ $.ajaxSetup({
 
 
 let email_names_input = document.querySelector("#form_name[name='email_names']")
-let domain_names_input = document.querySelector("#form_name[name='domain_names']")
+let company_name_input = document.querySelector("#form_name[name='company_name']")
 let country_input = document.querySelector(".form-control[name='country']")
+let domain_names_input = document.querySelector("#form_name[name='domain_names']")
+let email_v_input = document.querySelector(".form-control[name='email_v']")
+let email_file_input = document.querySelector(".form-control[name='email_file']")
 
 let contact1 = document.querySelector('#contact-form1')
 let contact2 = document.querySelector('#contact-form2')
-let contact3 = document.querySelector('#contact-form3')
 let contact4 = document.querySelector('#contact-form4')
-let contacts = [contact1,contact2,contact3,contact4]
+let contacts = [contact1,contact2,contact4]
 
 let js_alerts = document.querySelector('#js_alerts')
+
+// Code to set all the values of country list to the country full name
+let country_lists = document.getElementById('country_list')
+try{
+  Array.from(country_lists.children).forEach(
+    i=>{
+      i.setAttribute('value',i.innerText)
+    }
+  )
+} catch(e) {
+  console.log(e)
+}
 
 function alertErrors(message, status='success'){
   let classes = 'alert-'+status
@@ -588,25 +602,52 @@ function removeFormErrors(){
   email_names_input.parentElement.lastElementChild.innerHTML = ''
   domain_names_input.parentElement.lastElementChild.innerHTML = ''
   country_input.parentElement.lastElementChild.innerHTML = ''
+  email_v_input.parentElement.lastElementChild.innerHTML = ''
+  email_v_input.parentElement.lastElementChild.innerHTML = ''
+  company_name_input.parentElement.lastElementChild.innerHTML = ''
 }
 
 contacts.forEach(contact=>{
   contact.addEventListener('submit', conLookup)
 })
 
+
+let files = [];
+
+$("input[type=file]").change(function(event) {
+  $.each(event.target.files, function(index, file) {
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      var object = {};
+      object.filename = file.name;
+      object.data = event.target.result;
+      files.push(object);
+    };
+    reader.readAsDataURL(file);
+  });
+  console.log(files)
+});
+
 function conLookup(e) {
   // Start loader
   $('#ht-preloader').fadeIn();
 
   e.preventDefault()
-  let thisData = $(e.target).serialize()
-  let thisURL = window.location.href // or set your own url
+  let thisData = $(this).serialize()
+
+  // if a file was passed
+  if (files.length > 0){
+    let file = files[files.length-1]['data']
+    let len_eq = (file.match(/=/g) || []).length
+    thisData = thisData + '&'+file+'&len_eq='+len_eq
+  }
+  let thisURL = window.location.href
   $.ajax({
       method: "POST",
       url: thisURL,
       data: thisData,
       success: handleFormSuccess,
-      error: handleFormError,
+      error: handleFormError
   })
 
   // Remove messages in the js alerts
@@ -696,46 +737,72 @@ function handleFormError(jqXHR, textStatus){
   // Now add new errors
   if (formNum == 1){
     let email_names = error_data['email_names']
-    if (email_names.length > 0){
+    let company_names = error_data['company_name']
+    let countrys = error_data['country']
+    if (email_names && (email_names.length > 0)){
       let email_text = ''
       email_names.forEach(i=>{
         email_text = email_text + i +'<br>'
       })
       email_names_input.parentElement.lastElementChild.innerHTML = email_text
     }
+    if (company_names && (company_names.length > 0)){
+      let company_text = ''
+      company_names.forEach(i=>{
+        company_text = company_text + i +'<br>'
+      })
+      company_name_input.parentElement.lastElementChild.innerHTML = company_text
+    }
+    if (countrys && (countrys.length > 0)){
+      let country_text = ''
+      countrys.forEach(i=>{
+        country_text = country_text + i +'<br>'
+      })
+      country_input.parentElement.lastElementChild.innerHTML = country_text
+    }
   } else if (formNum == 2){
-    let domain_names = error_data['domain_names']
-    if (domain_names.length > 0){
-      let text = ''
-      domain_names.forEach(i=>{
-        text = text + i +'<br>'
-      })
-      domain_names_input.parentElement.lastElementChild.innerHTML = text
-    }
-  } else if (formNum == 3){
-    let country = error_data['country']
-    if (country.length > 0){
-      let text = ''
-      country.forEach(i=>{
-        text = text + i +'<br>'
-      })
-      country_input.parentElement.lastElementChild.innerHTML = text
-    }
+      let domain_names = error_data['domain_names']
+      if (domain_names && (domain_names.length > 0)){
+        let text = ''
+        domain_names.forEach(i=>{
+          text = text + i +'<br>'
+        })
+        domain_names_input.parentElement.lastElementChild.innerHTML = text
+      }
   } else if (formNum == 4){
-
+      let email_v_error = error_data['email_v']
+      let email_file_error = error_data['email_file']
+      if ((email_v_error) && (email_v_error.length > 0)){
+        let email_v_text = ''
+        email_v_error.forEach(i=>{
+          email_v_text = email_v_text + i +'<br>'
+        })
+        email_v_input.parentElement.lastElementChild.innerHTML = email_v_text
+      }
+      if (email_file_error && (email_file_error.length > 0)){
+        let email_file_text = ''
+        email_file_error.forEach(i=>{
+          email_file_text = email_file_text + i +'<br>'
+        })
+        email_file_input.parentElement.lastElementChild.innerHTML = email_file_text
+      }
   }
 }
 
 // Code to make download csv file button download csv
 let download_csv = document.querySelector('#download_csv')
-download_csv.onclick = function(e) {
-  var encodedUri = encodeURI(csvContent);
-  var link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "MailFinder_emails.csv");
-  link.style.display = 'none';
-  document.body.appendChild(link); // Required for FF
-
-  link.click(); // This will download the data file named "my_data.csv".
-  alert('Downloading Started')
+try {
+  download_csv.onclick = function(e) {
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "MailFinder_emails.csv");
+    link.style.display = 'none';
+    document.body.appendChild(link); // Required for FF
+  
+    link.click(); // This will download the data file named "my_data.csv".
+    alert('Downloading Started')
+  }
+} catch (error) {
+  console.log(error)
 }
