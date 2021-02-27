@@ -14,7 +14,6 @@ from .models import EmailModel, JOBS
 from .forms import EmailCallForm
 from .utils import clean_emails, email_validator, email_format
 
-
 class EmailFinder(LoginRequiredMixin,FormView):
     template_name = 'Scraper/scraper.html'
     extra_context = {
