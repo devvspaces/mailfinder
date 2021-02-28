@@ -62,7 +62,7 @@
               {% endif %}
             </div>
             <div class="form-group">
-              <input value="{% if form.email_names.value %}{{form.email_names.value}}{% endif %}" id="form_name" type="email" name="email_names" class="form-control" placeholder="Name(s)">
+              <input value="{% if form.email_names.value %}{{form.email_names.value}}{% endif %}" id="form_name" type="text" name="email_names" class="form-control" placeholder="Name(s)">
               <div class="help-block with-errors"></div>
               {% if form.email_names.errors %}
                 {% for i in form.email_names.errors %}

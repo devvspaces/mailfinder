@@ -39,15 +39,15 @@ class EmailCallForm(forms.Form):
             if email_file:
                 # This means a file was passed
                 email_file+=('='*int(len_eq))
-                # try:
-                email_file=str(base64.b64decode(email_file))
-                emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", email_file, re.I))
-                if len(emails) < 1:
-                    raise forms.ValidationError("There are no emails in this document")
-                else:
-                    return emails
-                # except:
-                #     raise forms.ValidationError("Your file could not be processed please make sure this file is a valid readable document")
+                try:
+                    email_file=str(base64.b64decode(email_file))
+                    emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.com", email_file, re.I))
+                    if len(emails) < 1:
+                        raise forms.ValidationError("There are no emails in this document")
+                    else:
+                        return emails
+                except:
+                    raise forms.ValidationError("Your file could not be processed please make sure this file is a valid readable document")
 		
         return email_file
 
