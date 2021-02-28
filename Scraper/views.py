@@ -10,10 +10,9 @@ from django.views.generic import FormView, CreateView, TemplateView
 from .page_links import get_emails_from_page, get_emails_from_links
 from .search_google import searchGoogle
 
-from .models import EmailModel, JOBS
+from .models import EmailModel, Company
 from .forms import EmailCallForm
 from .utils import clean_emails, email_validator, email_format
-
 
 class EmailFinder(LoginRequiredMixin,FormView):
     template_name = 'Scraper/scraper.html'
@@ -25,7 +24,6 @@ class EmailFinder(LoginRequiredMixin,FormView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context['form'] = self.form_class()
-        context['jobs'] = JOBS
         return render(request, self.template_name, context)
     
     def get_serializable(self, email_set):
@@ -33,6 +31,8 @@ class EmailFinder(LoginRequiredMixin,FormView):
         result_set = []
         for obj in email_set:
             new_dict = dict()
+            # Call email validation
+            obj.validate()
             new_dict['email'] = obj.email
             new_dict['domain'] = obj.domain
             new_dict['country'] = obj.country
@@ -47,52 +47,44 @@ class EmailFinder(LoginRequiredMixin,FormView):
 
         if request.is_ajax():
             # time.sleep(3)
-            form = self.form_class(request.POST)
+            # Clone request
+            cloned = request.POST.copy()
+            for a,b in request.POST.items():
+                if a.find('base64') != -1:
+                    cloned['email_file'] = a.replace('base64,','')
+            
+            form = self.form_class(cloned)
             if form.is_valid():
                 formNum = form.cleaned_data.get('formNum')
-                if formNum == 4:
-                    # Get random emails
-                    n = EmailModel.objects.count()
-                    try:
-                        list_nums = random.sample(list(range(n)), 600)
-                    except ValueError:
-                        return JsonResponse({'formNum':0}, status=400)
-
-                    # Loop through listnums, get obj and add data to a dict
-                    result_set = []
-                    for i in list_nums:
-                        try:
-                            obj = EmailModel.objects.get(id=i)
-                            new_dict = dict()
-                            new_dict['email'] = obj.email
-                            new_dict['domain'] = obj.domain
-                            new_dict['country'] = obj.country
-                            new_dict['status'] = obj.verified
-                            result_set.append(new_dict)
-                        except EmailModel.DoesNotExist:
-                            pass
-                elif formNum == 1:
-                    job_title = int(form.cleaned_data.get('job_title'))
+                print('Got here')
+                if formNum == 1:
+                    company_name = form.cleaned_data.get('company_name')
                     email_names = form.cleaned_data.get('email_names')
-                    email_set = []
+                    country = form.cleaned_data.get('country')
+                    email_set = set()
                     if len(email_names.replace(' ','')) > 0:
                         email_names_list = email_names.split(' ')
+
                         # Loop through email_names, find all names that is similar to this
                         for i in email_names_list:
                             finds = EmailModel.objects.filter(name__icontains=i)
                             if finds.exists():
-                                email_set = email_set+[i for i in finds]
+                                email_set.update(set([i for i in finds]))
                     
-                    # Search the database to get emails with the same job title
-                    finds = EmailModel.objects.filter(job_title=job_title)
-                    if finds.exists():
-                        email_set = email_set+[i for i in finds]
+                    # Check if company name is already in database
+                    saved_company = Company.objects.filter(name__iexact=company_name).first()
+                    if saved_company:
+                        saves = saved_company.emailmodel_set.all()
+                        if saves.exists():
+                            email_set.update(set([i for i in saves]))
+                    else:
+                        saved_company = Company.objects.create(name=company_name)
                     
                     # Search google for names and job title
                     email_names = email_names.split(' ')
                     searching_links = set()
                     for i in email_names:
-                        searching_links.update(set(searchGoogle(f'{JOBS[job_title][1]} {i} email')))
+                        searching_links.update(set(searchGoogle(f'{company_name} {i} email {country}')))
                     
                     # Get all emails crawled from links
                     got_emails = get_emails_from_links(searching_links)
@@ -102,12 +94,13 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     got_emails = email_format(got_emails)
 
                     # All current database emails
-                    db_emails = [i.email for i in email_set]
+                    # db_emails = [i.email for i in email_set]
                     
                     # Loop through searched emails to add to result set
                     for em in got_emails:
+                        queryset = EmailModel.objects.filter(email__exact=em)
                         # try:
-                        if EmailModel.objects.filter(email=em).exists() == False:
+                        if queryset.exists() == False:
                             print('Started the new emails ', em)
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
@@ -117,8 +110,10 @@ class EmailFinder(LoginRequiredMixin,FormView):
                             domain = sp[-1]
 
                             # Adding to database
-                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val, job_title=job_title)
-                            email_set.append(obj)
+                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                            obj.company_names.add(saved_company)
+                            email_set.add(obj)
+
                         # except:
                         #     pass
                     
@@ -158,12 +153,12 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     print(clean_emails_list, 'This are the clean emails')
                     
                     # All current database emails
-                    db_emails = [i.email for i in domain_set]
+                    # db_emails = [i.email for i in domain_set]
                     
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
                         # try:
-                        if EmailModel.objects.filter(email=em).exists() == False:
+                        if EmailModel.objects.filter(email__exact=em).exists() == False:
                             print('Started the new emails ', em)
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
@@ -180,17 +175,46 @@ class EmailFinder(LoginRequiredMixin,FormView):
 
                     # Get serializable result set
                     result_set = self.get_serializable(domain_set)
-                elif formNum == 3:
-                    country = form.cleaned_data.get('country')
-                    country_set = list(EmailModel.objects.filter(country__iexact=country))
+                elif formNum == 4:
+                    email_v = form.cleaned_data.get('email_v')
+                    email_file = form.cleaned_data.get('email_file')
+                    email_set = []
+                    got_emails = set()
+
+                    if email_v:
+                        got_emails.add(email_v)
+                    if email_file:
+                        print('Fgdfjaldfj')
+                        got_emails.update(email_file)
+                    
+                    # Loop through searched emails to add to result set
+                    for em in got_emails:
+                        # try:
+                        obj = EmailModel.objects.filter(email__exact=em)
+                        if obj.exists():
+                            email_obj = obj.first()
+                            email_set.append(email_obj)
+                        else:
+                            # Validate the email using our master email validator
+                            val = email_validator.email_validate(em)
+                            sp = em.split('@')
+                            name = sp[0]
+                            domain = sp[-1]
+
+                            # Adding to database
+                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                            email_set.append(obj)
+                        # except:
+                        #     pass
                     
                     # Get serializable result set
-                    result_set = self.get_serializable(country_set)
+                    result_set = self.get_serializable(email_set)
 
                 return JsonResponse({'success':'no_errors', 'queryset':result_set}, status=200)
 
             # Show errors
             error_data = form.errors
+            print(error_data)
             error_data['formNum'] = form.data.get('formNum')
             return JsonResponse(error_data, status=400)
         

@@ -114,11 +114,6 @@ def get_emails_from_page(url):
     
     return list(emails)
 
-# print(emails)
-# print('Local urls\n',local_urls)
-# print('Processed urls\n',processed_urls)
-# print('Foreign urls\n',foreign_urls)
-# print('Broken urls\n',broken_urls)
 
 
 def get_emails_from_links(links=None):

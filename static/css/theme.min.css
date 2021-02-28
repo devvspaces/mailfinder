@@ -1434,6 +1434,16 @@ Other
   display: flex !important;
 }
 
+.or_label{
+  display: block;
+  margin: -1rem auto;
+  width: fit-content;
+  text-transform: uppercase;
+  font-family: 'Nunito',sans-serif;
+  font-weight: bold;
+  color: var(--bs-teal);
+}
+
 
 
 /* ------------------------
