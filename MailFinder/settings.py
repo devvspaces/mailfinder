@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'Account',
     'Mobile',
     'Scraper',
+    'Payment',
 ]
 
 AUTH_USER_MODEL = 'Account.User'

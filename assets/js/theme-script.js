@@ -668,64 +668,70 @@ let row = rowArray.join(",");
 csvContent += row + "\r\n";
 
 function handleFormSuccess(data, textStatus, jqXHR){
-  // Reinstantiate csv content
-  csvContent = "data:text/csv;charset=utf-8,";
-  rowArray = ['Email','Domain','Country','Verified']
-  row = rowArray.join(",");
-  csvContent += row + "\r\n";
-
-  $('#ht-preloader').fadeOut();
-  alertErrors('We have found some emails for you', status='success')
-
-  // Clean data list element
-  $(data_list).children().remove()
-
-  // Get queryset from data
-  let queryset = data['queryset']
-
-  // Count emails and edit counting values
-  let num = queryset.length
-  email_count.innerHTML = num;
-  let num_verified = 0
-
-  // Loop querset, create tr and td elements to add to result body
-  queryset.forEach(item=>{
-    let tr = document.createElement('tr')
-    tr.setAttribute('scope','row')
-    let keys = Object.keys(item)
-    for (const key of keys){
-      let td = document.createElement('td')
-      if (key == 'status'){
-        let iconSpan = document.createElement('span')
-        let icon = document.createElement('i')
-        if(item[key]==true){
-          icon.classList.add('las', 'la-check')
-          iconSpan.classList.add('text-success')
-          // Increase the verified amount
-          num_verified++;
-        } else {
-          icon.classList.add('las','la-times')
-          iconSpan.classList.add('text-danger')
-        }
-        iconSpan.appendChild(icon)
-        td.appendChild(iconSpan)
-      } else{
-        let text = document.createTextNode(item[key])
-        td.appendChild(text)
-      }
-      tr.appendChild(td)
-    }
-    data_list.appendChild(tr)
-
-    // Adding the data to the csv file
-    let rowArray = Object.values(item)
-    let row = rowArray.join(",");
+  // Check if error_message was sent
+  let error_message = data['error_message']
+  if (error_message){
+    alertErrors(error_message, status='success')
+  } else {
+    // Reinstantiate csv content
+    csvContent = "data:text/csv;charset=utf-8,";
+    rowArray = ['Email','Domain','Country','Verified']
+    row = rowArray.join(",");
     csvContent += row + "\r\n";
 
-  })
+    $('#ht-preloader').fadeOut();
+    alertErrors('We have found some emails for you', status='success')
 
-  // Set amount of verified emails
-  valid_email_count.innerHTML = num_verified;
+    // Clean data list element
+    $(data_list).children().remove()
+
+    // Get queryset from data
+    let queryset = data['queryset']
+
+    // Count emails and edit counting values
+    let num = queryset.length
+    email_count.innerHTML = num;
+    let num_verified = 0
+
+    // Loop querset, create tr and td elements to add to result body
+    queryset.forEach(item=>{
+      let tr = document.createElement('tr')
+      tr.setAttribute('scope','row')
+      let keys = Object.keys(item)
+      for (const key of keys){
+        let td = document.createElement('td')
+        if (key == 'status'){
+          let iconSpan = document.createElement('span')
+          let icon = document.createElement('i')
+          if(item[key]==true){
+            icon.classList.add('las', 'la-check')
+            iconSpan.classList.add('text-success')
+            // Increase the verified amount
+            num_verified++;
+          } else {
+            icon.classList.add('las','la-times')
+            iconSpan.classList.add('text-danger')
+          }
+          iconSpan.appendChild(icon)
+          td.appendChild(iconSpan)
+        } else{
+          let text = document.createTextNode(item[key])
+          td.appendChild(text)
+        }
+        tr.appendChild(td)
+      }
+      data_list.appendChild(tr)
+
+      // Adding the data to the csv file
+      let rowArray = Object.values(item)
+      let row = rowArray.join(",");
+      csvContent += row + "\r\n";
+
+    })
+
+    // Set amount of verified emails
+    valid_email_count.innerHTML = num_verified;
+  }
 }
 
 function handleFormError(jqXHR, textStatus){

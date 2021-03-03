@@ -105,6 +105,9 @@
                   <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'profile' %}" >My Account</a></li>
                   <li class="nav-item dropdown"> <a class="nav-link " href="{% url 'email_finder' %}" >Find emails</a></li>
                   <li class="nav-item dropdown menu-logout"> <a class="nav-link " href="{% url 'logout' %}" >Logout</a></li>
+                {% else %}
+                  <li class="nav-item dropdown login_nav"> <a class="nav-link " href="{% url 'login' %}" >Login</a>
+                  </li>
                 {% endif %}
               </ul>
             </div>
