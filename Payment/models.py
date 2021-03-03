@@ -67,7 +67,7 @@ class OneoffPayment(models.Model):
     @property
     def get_credit(self):
         now = date_now()
-        total_seconds = (now - self.updated).total_seconds()
+        total_seconds = (now - self.started).total_seconds()
         if total_seconds/60/60/24 > 30:
             self.credits = 0
             self.save()
@@ -80,7 +80,7 @@ class OneoffPayment(models.Model):
 class SpecialPayment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
-    updated = models.DateTimeField(auto_now_add=True)
+    started = models.DateTimeField(auto_now_add=True)
     amount = models.ManyToManyField(Amount)
 
     @property
