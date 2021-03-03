@@ -121,21 +121,21 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     # Loop through searched emails to add to result set
                     for em in got_emails:
                         queryset = EmailModel.objects.filter(email__exact=em)
-                        # try:
-                        if queryset.exists() == False:
-                            # Validate the email using our master email validator
-                            val = email_validator.email_validate(em)
-                            sp = em.split('@')
-                            name = sp[0]
-                            domain = sp[-1]
+                        try:
+                            if queryset.exists() == False:
+                                # Validate the email using our master email validator
+                                val = email_validator.email_validate(em)
+                                sp = em.split('@')
+                                name = sp[0]
+                                domain = sp[-1]
 
-                            # Adding to database
-                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
-                            obj.company_names.add(saved_company)
-                            email_set.add(obj)
+                                # Adding to database
+                                obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                                obj.company_names.add(saved_company)
+                                email_set.add(obj)
 
-                        # except:
-                        #     pass
+                        except:
+                            pass
                     
                     # Get serializable result set
                     result_set = self.get_serializable(email_set)
@@ -173,19 +173,19 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
-                        # try:
-                        if EmailModel.objects.filter(email__exact=em).exists() == False:
-                            # Validate the email using our master email validator
-                            val = email_validator.email_validate(em)
-                            sp = em.split('@')
-                            name = sp[0]
-                            domain = sp[-1]
+                        try:
+                            if EmailModel.objects.filter(email__exact=em).exists() == False:
+                                # Validate the email using our master email validator
+                                val = email_validator.email_validate(em)
+                                sp = em.split('@')
+                                name = sp[0]
+                                domain = sp[-1]
 
-                            # Adding to database
-                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
-                            domain_set.append(obj)
-                        # except:
-                        #     pass
+                                # Adding to database
+                                obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                                domain_set.append(obj)
+                        except:
+                            pass
 
                     # Get serializable result set
                     result_set = self.get_serializable(domain_set)
