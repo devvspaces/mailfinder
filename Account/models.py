@@ -10,6 +10,9 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+from Scraper.models import EmailModel
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name=None, last_name=None,
                     gender=None, country=None, phone=None,
@@ -78,7 +81,10 @@ class User(AbstractBaseUser):
     phone = models.CharField(max_length=20, unique=True)
     gender = models.CharField(choices=GENDER, max_length=1)
     country = models.CharField(max_length=3)
-    verified_emails = models.IntegerField(default=90)
+    credits = models.IntegerField(default=90)
+
+    # Emails are connected to users, so that they won't pay for emails again
+    emails = models.ManyToManyField(EmailModel)
 
     # Admin fields
     active = models.BooleanField(default=False)
@@ -102,6 +108,18 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f'User {self.email}'
+    
+    def credit_balance(self):
+        credits = self.monthlypayment.get_credit + self.yearlypayment.get_credit + self.oneoffpayment.get_credit + self.specialpayment.get_credit
+        return credits
+    
+    def deduct_credit(self, amount):
+        precedence = [self.oneoffpayment, self.monthlypayment, self.yearlypayment, self.specialpayment]
+        for i in precedence:
+            if i.get_credit >= amount:
+                i.credits -= amount
+                i.save()
+                break
     
     @property
     def user_name(self):

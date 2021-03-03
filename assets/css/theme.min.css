@@ -1434,6 +1434,10 @@ Other
   display: flex !important;
 }
 
+.login_nav{
+  display: none;
+}
+
 .or_label{
   display: block;
   margin: -1rem auto;
@@ -1442,6 +1446,28 @@ Other
   font-family: 'Nunito',sans-serif;
   font-weight: bold;
   color: var(--bs-teal);
+}
+
+/* Reasons code */
+.reasons{
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+.reasons li{
+}
+.reasons li::before{
+  content: attr(num);
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #01a479;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  float: left;
+  margin-right: 10px;
 }
 
 
@@ -1455,6 +1481,9 @@ Other
   }
   .menu-logout{
     display: block !important;
+  }
+  .login_nav{
+    display: block;
   }
   .extra_btn{
     display: none !important;
