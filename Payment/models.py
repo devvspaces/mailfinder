@@ -15,7 +15,7 @@ class Amount(models.Model):
 
 
 class MonthlyPayment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now_add=True)
     amount = models.ManyToManyField(Amount)
@@ -37,7 +37,7 @@ class MonthlyPayment(models.Model):
 
 
 class YearlyPayment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now_add=True)
     amount = models.ManyToManyField(Amount)#
@@ -59,7 +59,7 @@ class YearlyPayment(models.Model):
 
 
 class OneoffPayment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     started = models.DateTimeField(auto_now_add=True)
     amount = models.ManyToManyField(Amount)
@@ -78,7 +78,7 @@ class OneoffPayment(models.Model):
 
 
 class SpecialPayment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now_add=True)
     amount = models.ManyToManyField(Amount)
