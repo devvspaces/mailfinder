@@ -115,8 +115,8 @@ def get_emails_from_page(url):
                             if not i in new_urls and not i in processed_urls:
                                 new_urls.append(i)
                             
-                        if not link in new_urls and not link in processed_urls:
-                            new_urls.append(i)
+                            if not link in new_urls and not link in processed_urls:
+                                new_urls.append(i)
             except(TypeError, requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
                 # add broken urls to it’s own set, then continue
                 broken_urls.add(url)
