@@ -39,6 +39,7 @@ def clean_emails(emails=None, domain=''):
         emails = []
     emails = list(set([i.lower() for i in emails]))
     processed=set()
+    failed=set()
     for i in emails:
         splited_email = i.split('@')
 
@@ -46,8 +47,10 @@ def clean_emails(emails=None, domain=''):
         if domain:
             if splited_email[-1] == domain.lower():
                 processed.add(i)
+            else:
+                failed.add(i)
         
-    return list(processed)
+    return list(processed), list(failed)
         
 
 def get_extra_deas():

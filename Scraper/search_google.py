@@ -20,7 +20,7 @@ except httplib2.error.ServerNotFoundError:
     pass
 
 
-def searchBing(query, num_links=20):
+def searchBing(query, num_links=20, unique=True):
     result_links = set()
     # Parsing the query and making the request
     url = urlunparse(("https", "www.bing.com", "/search", "", urlencode({"q": query}), ""))
@@ -76,10 +76,18 @@ def searchBing(query, num_links=20):
                 try:
                     get_link = link["href"]
                     if (get_link.startswith('http') or get_link.startswith('www')) and (not get_link.startswith('/')):
-                        obj = ScrapedLink.objects.filter(link__exact=get_link).first()
-                        if obj:
-                            if obj.need_scrape():
-                                result_links.add(get_link)
+                        # If unique is true this means that the links returned must not have been scraped before
+                        if unique:
+                            obj = ScrapedLink.objects.filter(link__exact=get_link).first()
+                            if obj:
+                                if obj.need_scrape():
+                                    result_links.add(get_link)
+                            else:
+                                for i in avoid:
+                                    if get_link.find(i) != -1:
+                                        break
+                                else:
+                                    result_links.add(get_link)
                         else:
                             for i in avoid:
                                 if get_link.find(i) != -1:
@@ -105,7 +113,7 @@ def google_search(search_term, **kwargs):
         res = res.list(q=search_term, cx=settings.GOOGLE_CSE_ID, **kwargs)
     try:
         res = res.execute()
-    except GoogleHttpError:
+    except:
         return None
     return res
 
@@ -115,6 +123,7 @@ def searchGoogle(search, num_links=20):
     
     for i in nums:
         result = google_search(search, num=10, start=i)
+        # print(result)
         if result is not None:
             try:
                 for i in result['items']:
@@ -123,7 +132,7 @@ def searchGoogle(search, num_links=20):
                 # Loop through the results, Check if the links have been recently scraped
                 for i in list(links):
                     try:
-                        obj = ScrapedLink.objects.get(link=i)
+                        obj = ScrapedLink.objects.get(link__exact=i)
                         if obj.need_scrape() == False:
                             links.discard(i)
                     except ScrapedLink.DoesNotExist:
@@ -134,6 +143,7 @@ def searchGoogle(search, num_links=20):
                     break
             except:
                 break
+            print(list(links))
             return list(links)
         else:
             return searchBing(search, num_links)

@@ -9,7 +9,7 @@ import time
 
 from django import db
 
-from .models import ScrapedLink
+from .models import ScrapedLink, OdinList
 
 
 
@@ -18,6 +18,31 @@ def get_emails_from_page(url):
 
     # a queue of urls to be crawled next
     new_urls = deque([url])
+
+    # Check if url is already in Odin's List
+    url_search = OdinList.objects.filter(domain__exact=url)
+    if url_search.exists():
+        odin_obj = url_search.first()
+        
+        # Find all links that have not been searched in Odins obj
+        new_links = odin_obj.new_links()
+
+        # If there are no links in new urls
+        if len(new_links) < 1:
+            if odin_obj.need_scrape():
+                odin_obj.reset_children()
+            else:
+                # This means the domain doesn't need scraping
+                return []
+        else:
+            new_urls = deque()
+            for i in new_links:
+                new_urls.append(i)
+    else:
+        odin_obj = OdinList.objects.create(domain=url)
+
+        
+        
 
     # a set of urls that we have already processed
     processed_urls = set()
@@ -33,12 +58,10 @@ def get_emails_from_page(url):
 
     emails = set()
 
-    man=0
 
     # process urls one by one until we exhaust the queue
     start = time.time()
     while len(new_urls):
-        man+=1
         # move url from the queue to processed url set
         url = new_urls.popleft()
         processed_urls.add(url)
@@ -67,51 +90,45 @@ def get_emails_from_page(url):
                     # Updated the last scraped date
                     obj.save()
                 except ScrapedLink.DoesNotExist:
-                    obj = ScrapedLink.objects.create(link=url)
+                    obj = ScrapedLink.objects.create(parent_link=odin_obj,link=url, beta_searched=True)
 
-                if (time.time()-start)>(20):
+                if (time.time()-start)>(100):
                     break
 
                 for link in soup.find_all('a'):
                     # extract link url from the anchor
                     anchor = link.attrs['href'] if 'href' in link.attrs else ''
 
-                    if anchor.startswith('/'):
-                        local_link = base_url + anchor
-                        local_urls.add(local_link)
-                    elif strip_base in anchor:
-                        local_urls.add(anchor)
-                    elif not anchor.startswith('http'):
-                        local_link = path + anchor
-                        local_urls.add(local_link)
-                    else:
-                        foreign_urls.add(anchor)
-                    
-                    for i in local_urls:
-                        if not i in new_urls and not i in processed_urls:
-                            # Check if the url have been added if not then add it
-                            try:
-                                obj = ScrapedLink.objects.get(link=i)
-                                if obj.need_scrape() == True:
-                                    new_urls.append(i)
-                            except ScrapedLink.DoesNotExist:
-                                obj = ScrapedLink.objects.create(link=i)
-                                new_urls.append(i)
+                    if anchor.split('/')[-1].find('#') == -1:
+                        if anchor.startswith('/'):
+                            local_link = base_url + anchor
+                            local_urls.add(local_link)
+                        elif strip_base in anchor:
+                            local_urls.add(anchor)
+                        elif not anchor.startswith('http'):
+                            local_link = path + anchor
+                            local_urls.add(local_link)
+                        else:
+                            foreign_urls.add(anchor)
                         
-                    if not link in new_urls and not link in processed_urls:
-                        # Check if the url have been added if not then add it
-                        try:
-                            obj = ScrapedLink.objects.get(link=link)
-                            if obj.need_scrape() == True:
-                                new_urls.append(link)
-                        except ScrapedLink.DoesNotExist:
-                            obj = ScrapedLink.objects.create(link=link)
-                            new_urls.append(link)
+                        for i in local_urls:
+                            if not i in new_urls and not i in processed_urls:
+                                new_urls.append(i)
+                            
+                        if not link in new_urls and not link in processed_urls:
+                            new_urls.append(i)
             except(TypeError, requests.exceptions.MissingSchema, requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema):
                 # add broken urls to it’s own set, then continue
                 broken_urls.add(url)
                 continue
     
+    # Now add remaining urls that have not been searched to its odin domain obj
+    unique_new_urls = set(new_urls)
+    for i in unique_new_urls:
+        if ScrapedLink.objects.filter(link__exact=i).exists() == False:
+            obj = ScrapedLink.objects.create(parent_link=odin_obj,link=i, beta_searched=True)
+    print('Links this got', unique_new_urls)
+    print('Emails this got', emails)
     return list(emails)
 
 

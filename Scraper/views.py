@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView, TemplateView
 
 from .page_links import get_emails_from_page, get_emails_from_links
-from .search_google import searchGoogle
+from .search_google import searchGoogle, searchBing
 
 from .models import EmailModel, Company
 from .forms import EmailCallForm
@@ -27,26 +27,50 @@ class EmailFinder(LoginRequiredMixin,FormView):
         return render(request, self.template_name, context)
     
     def get_serializable(self, email_set):
+        # Get user obj
+        user = self.request.user
+
         # Loop through email set add data to a dict
         result_set = []
+
+        # Check if user has collected this email before
+        user_emails = user.emails.all()
+
+        # Set variable for new verified emails
+        new_verified = 0
+        
         for obj in email_set:
             new_dict = dict()
+
+            # Check if this email obj is verified
+            if obj.verified:
+                if obj not in user_emails:
+                    new_verified+=1
+                    user.emails.add(obj)
+
             # Call email validation
             obj.validate()
+
+            # Add values to dictionary
             new_dict['email'] = obj.email
             new_dict['domain'] = obj.domain
             new_dict['country'] = obj.country
             new_dict['status'] = obj.verified
             result_set.append(new_dict)
+
+        # Check if the user has enough credits for the new verified emails
+        if user.credits >= new_verified:
+            user.deduct_credit(new_verified)
+            user.save()
+            return result_set
         
-        return result_set
+        return 1001
     
     def post(self, request, *args, **kwargs):
         request = self.request
         context = self.get_context_data()
 
         if request.is_ajax():
-            # time.sleep(3)
             # Clone request
             cloned = request.POST.copy()
             for a,b in request.POST.items():
@@ -56,7 +80,6 @@ class EmailFinder(LoginRequiredMixin,FormView):
             form = self.form_class(cloned)
             if form.is_valid():
                 formNum = form.cleaned_data.get('formNum')
-                print('Got here')
                 if formNum == 1:
                     company_name = form.cleaned_data.get('company_name')
                     email_names = form.cleaned_data.get('email_names')
@@ -84,11 +107,10 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     email_names = email_names.split(' ')
                     searching_links = set()
                     for i in email_names:
-                        searching_links.update(set(searchGoogle(f'{company_name} {i} email {country}')))
+                        searching_links.update(set(searchBing(f'{company_name} {i} contact email {country}', unique=False)))
                     
                     # Get all emails crawled from links
                     got_emails = get_emails_from_links(searching_links)
-                    print(got_emails)
 
                     # Make sure all emails are in correct format
                     got_emails = email_format(got_emails)
@@ -101,10 +123,8 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         queryset = EmailModel.objects.filter(email__exact=em)
                         # try:
                         if queryset.exists() == False:
-                            print('Started the new emails ', em)
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
-                            print(em, val, 'Validation status')
                             sp = em.split('@')
                             name = sp[0]
                             domain = sp[-1]
@@ -125,6 +145,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     domain_set = []
                     got_emails = []
                     clean_emails_list = []
+                    failed_emails_list = []
 
                     # Loop through domain_names, find all names that is similar to this
                     for i in domain_names:
@@ -133,24 +154,19 @@ class EmailFinder(LoginRequiredMixin,FormView):
                             domain_set = domain_set+[i for i in finds]
 
                         # Searching google for results
-                        google_results = searchGoogle(i+' email')
-                        print(google_results, 'This are the links google_got')
+                        google_results = searchGoogle(i+' contact email')
                         got_emails = got_emails + get_emails_from_links(google_results)
-                        print(got_emails, 'This is the google results email')
 
                         # Searching all pages in the site
                         got_emails = got_emails + get_emails_from_page(i)
 
-                        # Check their format then Clean got emails
-                        print(got_emails, 'This are the emails before cleaning')
-                        clean_emails_list.extend(clean_emails(email_format(got_emails), i))
+                        # Check their format then Clean got emails and add failed emails to failed list for adding and verification
+                        cleaned_emails, failed_emails = clean_emails(email_format(got_emails), i)
+                        clean_emails_list.extend(cleaned_emails)
+                        failed_emails_list.extend(failed_emails)
+
                         got_emails = []
                         
-                        # print('\n\n',got_emails,'\n\n')
-                    
-                    # print(got_emails, 'This are the emails before cleaning')
-                    
-                    print(clean_emails_list, 'This are the clean emails')
                     
                     # All current database emails
                     # db_emails = [i.email for i in domain_set]
@@ -159,10 +175,8 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     for em in clean_emails_list:
                         # try:
                         if EmailModel.objects.filter(email__exact=em).exists() == False:
-                            print('Started the new emails ', em)
                             # Validate the email using our master email validator
                             val = email_validator.email_validate(em)
-                            print(em, val, 'Validation status')
                             sp = em.split('@')
                             name = sp[0]
                             domain = sp[-1]
@@ -175,6 +189,16 @@ class EmailFinder(LoginRequiredMixin,FormView):
 
                     # Get serializable result set
                     result_set = self.get_serializable(domain_set)
+
+                    # Loop through failed email list
+                    for i in failed_emails_list:
+                        val = email_validator.email_validate(i)
+                        sp = i.split('@')
+                        name = sp[0]
+                        domain = sp[-1]
+
+                        # Adding to database
+                        EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
                 elif formNum == 4:
                     email_v = form.cleaned_data.get('email_v')
                     email_file = form.cleaned_data.get('email_file')
@@ -184,7 +208,6 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     if email_v:
                         got_emails.add(email_v)
                     if email_file:
-                        print('Fgdfjaldfj')
                         got_emails.update(email_file)
                     
                     # Loop through searched emails to add to result set
@@ -210,11 +233,14 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     # Get serializable result set
                     result_set = self.get_serializable(email_set)
 
+                # Check if result set is error codes
+                if result_set == 1001:
+                    error_message = 'You don\'t have enough credits in your account, buy more credits to get more emails'
+                    return JsonResponse({'success':'no_errors', 'error_message':error_message}, status=200)
                 return JsonResponse({'success':'no_errors', 'queryset':result_set}, status=200)
 
             # Show errors
             error_data = form.errors
-            print(error_data)
             error_data['formNum'] = form.data.get('formNum')
             return JsonResponse(error_data, status=400)
         

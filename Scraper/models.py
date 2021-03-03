@@ -57,9 +57,56 @@ class EmailModel(models.Model):
             return None
 
 
-class ScrapedLink(models.Model):
-    link = models.URLField(default='N/A', max_length=500)
+
+
+
+class OdinList(models.Model):
+    '''
+    What we have here is a model/table in the database, we scrape every pages of a websites our users have searched before
+    so that we would have scraped every email on those sites to make the users next search faster and more accurate
+    '''
+    domain = models.URLField(default='N/A', max_length=500, unique=True)
+    scraped = models.BooleanField(default=False)
     last_scraped = models.DateTimeField(auto_now = True, blank=True)
+
+    def need_scrape(self):
+        if not self.scraped:
+            return True
+        if self.last_scraped:
+            time_bound = (date_now - self.last_scraped).total_seconds()
+            if (time_bound/60/60/24) > settings.SCRAPING_TIME:
+                return True
+        else:
+            return True
+
+        return False
+    
+    def reset_children(self):
+        for i in self.scrapedlink_set.all():
+            i.beta_searched = False
+            i.save()
+    
+    def new_links(self):
+        links = set()
+        for i in self.scrapedlink_set.all():
+            # Check if this url is not permitted
+            if i.link.find('#') != 1:
+                i.delete()
+            elif i.beta_searched == False:
+                links.add(i.link)
+        return list(links)
+
+    def __str__(self):
+        return f'OdinList: {self.link}'
+
+
+
+
+class ScrapedLink(models.Model):
+    parent_link = models.ForeignKey(OdinList, on_delete=models.DO_NOTHING, null=True)
+    link = models.URLField(default='N/A', max_length=500, unique=True)
+    last_scraped = models.DateTimeField(auto_now = True, blank=True)
+    beta_searched = models.BooleanField(default=False)
 
     def need_scrape(self):
         if self.last_scraped:
@@ -73,28 +120,3 @@ class ScrapedLink(models.Model):
 
     def __str__(self):
         return f'ScrapedLink: {self.link}'
-
-
-class OdinList(models.Model):
-    '''
-    What we have here is a model/table in the database, we scrape every pages of a websites our users have searched before
-    so that we would have scraped every email on those sites to make the users next search faster and more accurate
-    '''
-    link = models.URLField(default='N/A', max_length=500)
-    scraped = models.BooleanField(default=False)
-    last_scraped = models.DateTimeField(auto_now = True, blank=True)
-
-    def need_scrape(self):
-        if not scraped:
-            return True
-        if self.last_scraped:
-            time_bound = (date_now - self.last_scraped).total_seconds()
-            if (time_bound/60/60/24) > settings.SCRAPING_TIME:
-                return True
-        else:
-            return True
-
-        return False
-
-    def __str__(self):
-        return f'OdinList: {self.link}'
