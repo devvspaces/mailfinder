@@ -192,13 +192,16 @@ class EmailFinder(LoginRequiredMixin,FormView):
 
                     # Loop through failed email list
                     for i in failed_emails_list:
-                        val = email_validator.email_validate(i)
-                        sp = i.split('@')
-                        name = sp[0]
-                        domain = sp[-1]
+                        try:
+                            val = email_validator.email_validate(i)
+                            sp = i.split('@')
+                            name = sp[0]
+                            domain = sp[-1]
 
-                        # Adding to database
-                        EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                            # Adding to database
+                            EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                        except:
+                            pass
                 elif formNum == 4:
                     email_v = form.cleaned_data.get('email_v')
                     email_file = form.cleaned_data.get('email_file')
