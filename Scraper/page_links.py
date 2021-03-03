@@ -92,7 +92,7 @@ def get_emails_from_page(url):
                 except ScrapedLink.DoesNotExist:
                     obj = ScrapedLink.objects.create(parent_link=odin_obj,link=url, beta_searched=True)
 
-                if (time.time()-start)>(100):
+                if (time.time()-start)>(20):
                     break
 
                 for link in soup.find_all('a'):
