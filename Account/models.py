@@ -110,13 +110,13 @@ class User(AbstractBaseUser):
         return f'User {self.email}'
     
     def credit_balance(self):
-        credits = self.monthlypayment.get_credit + self.yearlypayment.get_credit + self.oneoffpayment.get_credit + self.specialpayment.get_credit
+        credits = int(self.monthlypayment.get_credit) + int(self.yearlypayment.get_credit) + int(self.oneoffpayment.get_credit) + int(self.specialpayment.get_credit)
         return credits
     
     def deduct_credit(self, amount):
         precedence = [self.oneoffpayment, self.monthlypayment, self.yearlypayment, self.specialpayment]
         for i in precedence:
-            if i.get_credit >= amount:
+            if int(i.get_credit) >= amount:
                 i.credits -= amount
                 i.save()
                 break

@@ -668,6 +668,7 @@ let row = rowArray.join(",");
 csvContent += row + "\r\n";
 
 function handleFormSuccess(data, textStatus, jqXHR){
+  $('#ht-preloader').fadeOut();
   // Check if error_message was sent
   let error_message = data['error_message']
   if (error_message){
@@ -679,7 +680,6 @@ function handleFormSuccess(data, textStatus, jqXHR){
     row = rowArray.join(",");
     csvContent += row + "\r\n";
 
-    $('#ht-preloader').fadeOut();
     alertErrors('We have found some emails for you', status='success')
 
     // Clean data list element

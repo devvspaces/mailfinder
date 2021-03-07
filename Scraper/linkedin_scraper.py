@@ -37,7 +37,7 @@ sleep(0.5)
 
 driver.get('https://www.google.com')
 sleep(3)
-
+# driver.find_element_by_tag_name()
 search_query = driver.find_element_by_name('q')
 search_query.send_keys(parameters.search_query)
 sleep(0.5)
