@@ -1,8 +1,10 @@
 from Account.models import User
 
+from .models import Amount
+
 
 def update_user_credit(obj, amount_id):
-    amount_obj = obj.amount_set.filter(id=amount_id)
+    amount_obj = Amount.objects.filter(id=amount_id).first()
     obj.credits = obj.credits + amount_obj.amount
     obj.save()
     return obj
@@ -11,9 +13,9 @@ def add_credits(payment_uid):
     # The payment uid contains the joined format of the user id, the payment he/she wants and the amount
     # We are spliting it to get each value
     ids = payment_uid.split('-')
-    user_uid = ids[0]
-    payment_uid = ids[1]
-    amount_uid = ids[2]
+    user_uid = int(ids[0])
+    payment_uid = int(ids[1])
+    amount_uid = int(ids[2])
 
     # Get the user obj
     user=User.objects.get(id=user_uid)

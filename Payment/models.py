@@ -7,8 +7,15 @@ from Scraper.utils import date_now
 
 
 class Amount(models.Model):
+    CHOICES = (
+        ('1', 'Monthly Payment',),
+        ('2', 'Yearly Payment',),
+        ('3', 'One-off Payment',),
+        ('4', 'Special Payment',),
+    )
     amount = models.FloatField()
     price = models.FloatField()
+    price = models.CharField(choices=CHOICES, max_length=1, default='3')
 
     def __str__(self):
         return f'Amount: {self.amount} emails for ${self.price}'
@@ -18,7 +25,6 @@ class MonthlyPayment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now_add=True)
-    amount = models.ManyToManyField(Amount)
 
     @property
     def get_credit(self):
@@ -28,7 +34,7 @@ class MonthlyPayment(models.Model):
             # Call reocurring payment function
             return 0
         else:
-            return credits
+            return int(self.credits)
         
         return 0
 
@@ -40,7 +46,6 @@ class YearlyPayment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now_add=True)
-    amount = models.ManyToManyField(Amount)#
 
     @property
     def get_credit(self):
@@ -50,7 +55,7 @@ class YearlyPayment(models.Model):
             # Call reocurring payment function
             return 0
         else:
-            return credits
+            return int(self.credits)
         
         return 0
 
@@ -62,7 +67,6 @@ class OneoffPayment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     started = models.DateTimeField(auto_now_add=True)
-    amount = models.ManyToManyField(Amount)
 
     @property
     def get_credit(self):
@@ -71,7 +75,7 @@ class OneoffPayment(models.Model):
         if total_seconds/60/60/24 > 30:
             self.credits = 0
             self.save()
-        return self.credits
+        return int(self.credits)
 
     def __str__(self):
         return f'Oneoff Payment: {self.user.first_name} {self.credits}'
@@ -81,7 +85,6 @@ class SpecialPayment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=0)
     started = models.DateTimeField(auto_now_add=True)
-    amount = models.ManyToManyField(Amount)
 
     @property
     def get_credit(self):
@@ -90,7 +93,7 @@ class SpecialPayment(models.Model):
         # if total_seconds/60/60/24 > 30:
         #     self.credits = 0
         #     self.save()
-        return self.credits
+        return int(self.credits)
 
     def __str__(self):
         return f'Special Payment: {self.user.first_name} {self.credits}'

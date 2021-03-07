@@ -396,6 +396,10 @@
           <p id='valid_email_count' class="count-number display-4 text-dark" data-to="0" data-speed="2000">0</p>
         </div>
         <div class="col-lg-4 col-md-3">
+          <h6>Credits</h6>
+          <p class="count-number display-4 text-dark" data-to="{{request.user.credit_balance}}" data-speed="2000">{{request.user.credit_balance}}</p>
+        </div>
+        <div class="col-lg-4 col-md-3">
           <h6>Get your emails</h6>
           <button id="download_csv" class="btn btn-primary">Download CSV</button>
         </div>

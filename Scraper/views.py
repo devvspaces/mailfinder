@@ -59,11 +59,20 @@ class EmailFinder(LoginRequiredMixin,FormView):
             result_set.append(new_dict)
 
         # Check if the user has enough credits for the new verified emails
-        if user.credits >= new_verified:
+        current_credit = user.credit_balance()
+        if (current_credit > 0) and (current_credit >= new_verified):
             user.deduct_credit(new_verified)
-            user.save()
+            print('We deducted', new_verified)
             return result_set
-        
+        elif current_credit > 0:
+            new_resultset=dict()
+            # Since user credits is not enought but is more than zero, lets give the user all the email for the credits
+            for a,b in zip(result_set, range(current_credit)):
+                new_resultset[a] = result_set[a]
+                user.deduct_credit(1)
+                print('We deducted', new_verified)
+            return new_resultset
+                
         return 1001
     
     def post(self, request, *args, **kwargs):
