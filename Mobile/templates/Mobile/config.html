@@ -1,0 +1,181 @@
+{% extends 'Mobile/base.html' %}
+{% load static %}
+{% block pageContent %}
+<!--hero section start-->
+
+<section class="hero-banner position-relative custom-pt-1 custom-pb-2 bg-dark" data-bg-img="{% static 'images/bg/02.png' %}">
+  <div class="container">
+    <div class="row text-white text-center z-index-1">
+      <div class="col">
+        <h1 class="text-white">Admin Settings</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center bg-transparent p-0 m-0">
+            <li class="breadcrumb-item"><a class="text-white" href="/">Home  /</a>
+            </li>
+            <li class="breadcrumb-item"><a class="text-white" href="/admin">Admin  /</a>
+            </li>
+            <li class="breadcrumb-item active text-primary" aria-current="page">Settings</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <!-- / .row -->
+  </div>
+  <!-- / .container -->
+  <div class="shape-1 bottom">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#fff" fill-opacity="1" d="M0,288L48,288C96,288,192,288,288,266.7C384,245,480,203,576,208C672,213,768,267,864,245.3C960,224,1056,128,1152,96C1248,64,1344,96,1392,112L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </div>
+</section>
+
+<!--hero section end--> 
+
+
+<!--body content start-->
+
+<div class="page-content">
+
+<!--settings start-->
+
+<section>
+  <div class="container" id="config_form">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 boxing">
+        <h4 class="header">Email Verification Configurations
+          <a href="#" class="btn btn-primary submit-form">Save</a>
+        </h4>
+        <form action="" method="post" class='row'>
+          {% csrf_token %}
+          <div class="form-group col-md-4">
+            <label>Stop Smtp Check</label>
+            <div class="radios">
+              <div class="radio">
+                <label for="Yes">Yes</label>
+                <input type="radio" {% if STOP_STMP_CHECK == 1 %}checked{% endif %} name="STOP_STMP_CHECK" value="1">
+              </div>
+              <div class="radio">
+                <label for="Yes">No</label>
+                <input type="radio" {% if STOP_STMP_CHECK == 0 %}checked{% endif %} name="STOP_STMP_CHECK" value="0">
+              </div>
+            </div>
+            <div class="help-block with-errors">{{STOP_STMP_CHECK_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Email Validation Time</label>
+            <input id="form_name" type="number" value="{{VALIDATION_TIME}}" name="VALIDATION_TIME" class="form-control" required="required" data-error="Time is required in seconds.">
+            <div class="help-block with-errors">{{VALIDATION_TIME_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Email Scraping Time</label>
+            <input id="form_name" type="number" value="{{SCRAPING_TIME}}" name="SCRAPING_TIME" class="form-control" required="required" data-error="Time is required in seconds.">
+            <div class="help-block with-errors">{{SCRAPING_TIME_ERROR}}</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-lg-10 boxing">
+        <h4 class="header">Email Verification Configurations
+          <a href="#" class="btn btn-primary submit-form">Save</a>
+        </h4>
+        <form action="" method="post" class='row'>
+          {% csrf_token %}
+          <div class="form-group col-md-6">
+            <label>Email Backend</label>
+            <input id="form_name" type="text" value="{{EMAIL_BACKEND}}" name="EMAIL_BACKEND" class="form-control" required="required" data-error="Email backend is required.">
+            <div class="help-block with-errors">{{EMAIL_BACKEND_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Email Host</label>
+            <input id="form_name" type="text" value="{{EMAIL_HOST}}" name="EMAIL_HOST" class="form-control" required="required" data-error="Email host is required.">
+            <div class="help-block with-errors">{{EMAIL_HOST_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Email Port</label>
+            <input id="form_name" type="number" value="{{EMAIL_PORT}}" name="EMAIL_PORT" class="form-control" required="required" data-error="Email port is required.">
+            <div class="help-block with-errors">{{EMAIL_PORT_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Email Use TLS</label>
+            <div class="radios">
+              <div class="radio">
+                <label for="Yes">Yes</label>
+                <input type="radio" {% if EMAIL_USE_TLS == 1 %}checked{% endif %} name="EMAIL_USE_TLS" value="1">
+              </div>
+              <div class="radio">
+                <label for="Yes">No</label>
+                <input type="radio" {% if EMAIL_USE_TLS == 0 %}checked{% endif %} name="EMAIL_USE_TLS" value="0">
+              </div>
+            </div>
+            <div class="help-block with-errors">{{EMAIL_USE_TLS_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Email Host Username</label>
+            <input id="form_name" type="text" value="{{EMAIL_HOST_USER}}" name="EMAIL_HOST_USER" class="form-control" required="required" data-error="Email host username is required.">
+            <div class="help-block with-errors">{{EMAIL_HOST_USER_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Email Host Password</label>
+            <input id="form_name" type="text" value="{{EMAIL_HOST_PASSWORD}}" name="EMAIL_HOST_PASSWORD" class="form-control" required="required" data-error="Email host password is required.">
+            <div class="help-block with-errors">{{EMAIL_HOST_PASSWORD_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Default From Email</label>
+            <input id="form_name" type="text" value="{{DEFAULT_FROM_EMAIL}}" name="DEFAULT_FROM_EMAIL" class="form-control" required="required" data-error="Default from email is required.">
+            <div class="help-block with-errors">{{DEFAULT_FROM_EMAIL_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Default Company Email</label>
+            <input id="form_name" type="text" value="{{DEFAULT_COMPANY_EMAIL}}" name="DEFAULT_COMPANY_EMAIL" class="form-control" required="required" data-error="Company email is required.">
+            <div class="help-block with-errors">{{DEFAULT_COMPANY_EMAIL_ERROR}}</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-lg-10 boxing">
+        <h4 class="header">Google Search Engine Configurations
+          <a href="#" class="btn btn-primary submit-form">Save</a>
+        </h4>
+        <form action="" method="post" class='row'>
+          {% csrf_token %}
+          <div class="form-group col-md-6">
+            <label>Google Search API Key</label>
+            <input id="form_name" type="text" value="{{GOOGLE_SEARCH_API_KEY}}" name="GOOGLE_SEARCH_API_KEY" class="form-control" required="required" data-error="Google search api key is required.">
+            <div class="help-block with-errors">{{GOOGLE_SEARCH_API_KEY_ERROR}}</div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Google CSE ID</label>
+            <input id="form_name" type="text" value="{{GOOGLE_CSE_ID}}" name="GOOGLE_CSE_ID" class="form-control" required="required" data-error="Google CSE ID is required.">
+            <div class="help-block with-errors">{{GOOGLE_CSE_ID_ERROR}}</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-lg-10 boxing">
+        <h4 class="header">Hunter API Configurations
+          <a href="#" class="btn btn-primary submit-form">Save</a>
+        </h4>
+        <form action="" method="post" class='row'>
+          {% csrf_token %}
+          <div class="form-group col-md-6">
+            <label>Google Search API Key</label>
+            <input id="form_name" type="text" value="{{HUNTER_API_KEY}}" name="HUNTER_API_KEY" class="form-control" required="required" data-error="Email backend is required.">
+            <div class="help-block with-errors">{{HUNTER_API_KEY_ERROR}}</div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--settings end-->
+
+
+
+
+</div>
+
+<!--body content end--> 
+
+
+{% endblock %}

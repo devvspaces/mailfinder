@@ -37,48 +37,36 @@ def login():
 
 # Login facebook with selenium webdriver
 driver = webdriver.Chrome('/Users/HP6460B/Downloads/driver_all/chromedriver')
-driver.get('http://www.facebook.com')
+# driver.get('http://www.facebook.com')
 
-username = driver.find_element_by_id('email')
-username.send_keys(FB_EMAIL)
-sleep(0.5)
+# username = driver.find_element_by_id('email')
+# username.send_keys(FB_EMAIL)
+# sleep(0.5)
 
-password = driver.find_element_by_id('pass')
-password.send_keys(FB_PASSWORD)
-sleep(0.5)
+# password = driver.find_element_by_id('pass')
+# password.send_keys(FB_PASSWORD)
+# sleep(0.5)
 
-sign_in_button = driver.find_element_by_xpath('//*[@type="submit"]')
-sign_in_button.click()
-sleep(0.5)
-
+# sign_in_button = driver.find_element_by_xpath('//*[@type="submit"]')
+# sign_in_button.click()
+# sleep(0.5)
 
 print('Scraping link started')
 driver.get(url)
 sleep(5)
 
 
-page = driver.page_source.encode().decode()
-with open('page.html', 'w') as f:
-    f.write(page)
-
-
 print('Scrape complete')
-link=driver.find_element_by_css_selector('a.'+'.'.join(cl.split(' ')))
-url_l=link.get_attribute('href')
-driver.get(url_l)
-sleep(5)
 
 
-imgs = driver.find_element_by_tag_name('img')
+link=driver.find_element_by_xpath("//a[@rel='theater']")
+# print(link, link.get_attribute('href'))
+# link=driver.find_element_by_css_selector('div.'+'uiScaledImageContainer')
+link.click()
+sleep(10)
 
-print(imgs)
-print(imgs.get_attribute('data-visualcompletion'))
-print(imgs.get_attribute('src'))
 
-
-
-imgs = driver.find_element_by_xpath('//*[@data-visualcompletion="media-vc-image"]')
-print(imgs)
-print(imgs.get_attribute('data-visualcompletion'))
-print(imgs.get_attribute('src'))
-
+# Getting the image now
+#
+img=driver.find_element_by_xpath("//img[@class='spotlight']")
+print(img.get_attribute('src'))

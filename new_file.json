@@ -1,0 +1,45 @@
+{
+    "EMAIL_VERIFICATION_CONF": [
+        {
+            "STOP_STMP_CHECK": false,
+            "VALIDATION_TIME": 30,
+            "SCRAPING_TIME": "30"
+        }
+    ],
+    "EMAIL_CONF": [
+        {
+            "EMAIL_BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+            "EMAIL_HOST": "smtp.gmail.com",
+            "EMAIL_PORT": 587,
+            "EMAIL_USE_TLS": true,
+            "EMAIL_HOST_USER": "netrobeweb@gmail.com",
+            "EMAIL_HOST_PASSWORD": "wpcgtxfwmiqnlbwv",
+            "DEFAULT_FROM_EMAIL": "mailfinder@gmail.com",
+            "DEFAULT_COMPANY_EMAIL": "netrobeweb@gmail.com"
+        }
+    ],
+    "GOOGLE_SEARCH_KEYS": [
+        {
+            "GOOGLE_SEARCH_API_KEY": "AIzaSyCgbUr7E_QlweVanuX5u4OU65YCc9MhVYM",
+            "GOOGLE_CSE_ID": "de1155bc82c628903"
+        }
+    ],
+    "GENERAL": [
+        {
+            "SECRET_KEY": "-mm$5=7=^6srk=d%@g@$++umss0qmako9)d3t5)ko5)d-yz4*ew",
+            "DEBUG": true,
+            "CUSTOM_DB": false,
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "mailfinderdb",
+            "USER": "mailadmin",
+            "PASSWORD": "alakio12345",
+            "HOST": "localhost",
+            "PORT": ""
+        }
+    ],
+    "HUNTER_API": [
+        {
+            "HUNTER_API_KEY": "3463d065404d8f48ac2fd71e8403119421b71cf9"
+        }
+    ]
+}

@@ -182,8 +182,13 @@
               </li>
               <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'faq' %}">Faq</a>
               </li>
-              <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'profile' %}">My Account</a></li>
-              <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'email_finder' %}">EmailFinder</a></li>
+              {% if request.user.is_authenticated %}
+                <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'profile' %}">My Account</a></li>
+                <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'email_finder' %}">EmailFinder</a></li>
+                {% if request.user.is_admin %}
+                  <li class="mb-3"><a class="list-group-item-action text-light" href="{% url 'admin_conf' %}">Admin Settings</a></li>
+                {% endif %}
+              {% endif %}
               <li><a class="list-group-item-action text-light" href="{% url 'contact' %}">Contact Us</a></li>
             </ul>
           </div>
@@ -194,7 +199,7 @@
               </li>
               <li class="mb-3"><a class="list-group-item-action text-light" href="#">Documentation</a>
               </li>
-              <li class="mb-3"><a class="list-group-item-action text-light" href="login.html">Account</a>
+              <li class="mb-3"><a class="list-group-item-action text-light" href="#">Account</a>
               </li>
               <!-- <li><a class="list-group-item-action text-light" href="career.html">Careers</a> -->
               </li>
