@@ -7,4 +7,5 @@ urlpatterns = [
     path('privacy-policy/', views.PrivacyPolicy.as_view(), name='privacy'),
     path('terms/', views.Terms.as_view(), name='terms'),
     path('contact-us/', views.Contact.as_view(), name='contact'),
+    path('admin-conf/settings/', views.AdminConfig.as_view(), name='admin_conf'),
 ]

@@ -13,6 +13,7 @@ from .search_google import searchGoogle, searchBing
 from .models import EmailModel, Company
 from .forms import EmailCallForm
 from .utils import clean_emails, email_validator, email_format
+from .hunter_api import email_hunter
 
 class EmailFinder(LoginRequiredMixin,FormView):
     template_name = 'Scraper/scraper.html'
@@ -54,6 +55,7 @@ class EmailFinder(LoginRequiredMixin,FormView):
             # Add values to dictionary
             new_dict['email'] = obj.email
             new_dict['domain'] = obj.domain
+            print(obj, '\n\n')
             new_dict['country'] = obj.country
             new_dict['status'] = obj.verified
             result_set.append(new_dict)
@@ -94,58 +96,66 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     email_names = form.cleaned_data.get('email_names')
                     country = form.cleaned_data.get('country')
                     email_set = set()
-                    if len(email_names.replace(' ','')) > 0:
-                        email_names_list = email_names.split(' ')
+                    searching_links = set()
 
-                        # Loop through email_names, find all names that is similar to this
-                        for i in email_names_list:
-                            finds = EmailModel.objects.filter(name__icontains=i)
-                            if finds.exists():
-                                email_set.update(set([i for i in finds]))
-                    
-                    # Check if company name is already in database
+                    # Getting the names passed to the form
+                    names = email_names.split(' ')
+
+                    # Getting the available emails from our database first
                     saved_company = Company.objects.filter(name__iexact=company_name).first()
                     if saved_company:
-                        saves = saved_company.emailmodel_set.all()
-                        if saves.exists():
-                            email_set.update(set([i for i in saves]))
+                        company_emails = saved_company.emailmodel_set.all()
+                        if len(names) > 0:
+                            for name in names:
+                                email_set.update(set([i for i in company_emails.filter(name__iexact=name)]))
                     else:
                         saved_company = Company.objects.create(name=company_name)
-                    
-                    # Search google for names and job title
-                    email_names = email_names.split(' ')
-                    searching_links = set()
-                    for i in email_names:
-                        searching_links.update(set(searchBing(f'{company_name} {i} contact email {country}', unique=False)))
-                    
-                    # Get all emails crawled from links
-                    got_emails = get_emails_from_links(searching_links)
 
-                    # Make sure all emails are in correct format
-                    got_emails = email_format(got_emails)
-
-                    # All current database emails
-                    # db_emails = [i.email for i in email_set]
+                    # Call email_hunter email_finder
+                    if len(names) == 2:
+                        # If the user passed a fullname we want to find that email with email finder
+                        hunter_emails = email_hunter.find_email(company_name, email_names)
+                        if hunter_emails is not None:
+                            email_set.add(hunter_emails)
+                        else:
+                            # This means no emails was found, we want to try our google search to find the email
+                            searching_links.update(set(searchBing(f'{company_name} {email_names} contact email {country}', unique=False)))
+                    else:
+                        # If no names were passed or the names passed is less than or more than two we want to do hunter domain search
+                        hunter_emails = email_hunter.domain_search(company_name=company_name)
+                        if hunter_emails is not None:
+                            email_set.update(set(hunter_emails))
+                        else:
+                            # Search google for names and job title
+                            email_names = email_names.split(' ')
+                            for i in email_names:
+                                searching_links.update(set(searchBing(f'{company_name} {i} contact email {country}', unique=False)))
                     
-                    # Loop through searched emails to add to result set
-                    for em in got_emails:
-                        queryset = EmailModel.objects.filter(email__exact=em)
-                        try:
-                            if queryset.exists() == False:
-                                # Validate the email using our master email validator
-                                val = email_validator.email_validate(em)
-                                sp = em.split('@')
-                                name = sp[0]
-                                domain = sp[-1]
+                    if searching_links:
+                        # Get all emails crawled from links
+                        got_emails = get_emails_from_links(searching_links)
 
-                                # Adding to database
-                                obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
-                                obj.company_names.add(saved_company)
-                                email_set.add(obj)
+                        # Make sure all emails are in correct format
+                        got_emails = email_format(got_emails)
+                        
+                        # Loop through searched emails to add to result set
+                        for em in got_emails:
+                            queryset = EmailModel.objects.filter(email__exact=em)
+                            try:
+                                if queryset.exists() == False:
+                                    # Validate the email using our master email validator
+                                    val = email_validator.email_validate(em)
+                                    sp = em.split('@')
+                                    name = sp[0]
+                                    domain = sp[-1]
 
-                        except:
-                            pass
-                    
+                                    # Adding to database
+                                    obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                                    obj.company_names.add(saved_company)
+                                    email_set.add(obj)
+                            except:
+                                pass
+
                     # Get serializable result set
                     result_set = self.get_serializable(email_set)
                 elif formNum == 2:
@@ -161,24 +171,25 @@ class EmailFinder(LoginRequiredMixin,FormView):
                         finds = EmailModel.objects.filter(domain__iexact=i)
                         if finds.exists():
                             domain_set = domain_set+[i for i in finds]
-
-                        # Searching google for results
-                        google_results = searchGoogle(i+' contact email')
-                        got_emails = got_emails + get_emails_from_links(google_results)
-
-                        # Searching all pages in the site
-                        got_emails = got_emails + get_emails_from_page(i)
-
-                        # Check their format then Clean got emails and add failed emails to failed list for adding and verification
-                        cleaned_emails, failed_emails = clean_emails(email_format(got_emails), i)
-                        clean_emails_list.extend(cleaned_emails)
-                        failed_emails_list.extend(failed_emails)
-
-                        got_emails = []
                         
-                    
-                    # All current database emails
-                    # db_emails = [i.email for i in domain_set]
+                        # Lets try to use our email hunter to hunt emails
+                        hunter_emails = email_hunter.domain_search(domain_name=i)
+                        if hunter_emails is not None:
+                            domain_set.extend(hunter_emails)
+                        else:
+                            # Searching google for results
+                            google_results = searchGoogle(i+' contact email')
+                            got_emails = got_emails + get_emails_from_links(google_results)
+
+                            # Searching all pages in the site
+                            got_emails = got_emails + get_emails_from_page(i)
+
+                            # Check their format then Clean got emails and add failed emails to failed list for adding and verification
+                            cleaned_emails, failed_emails = clean_emails(email_format(got_emails), i)
+                            clean_emails_list.extend(cleaned_emails)
+                            failed_emails_list.extend(failed_emails)
+
+                            got_emails = []
                     
                     # Loop through searched emails to add to result set
                     for em in clean_emails_list:
@@ -222,25 +233,46 @@ class EmailFinder(LoginRequiredMixin,FormView):
                     if email_file:
                         got_emails.update(email_file)
                     
-                    # Loop through searched emails to add to result set
-                    for em in got_emails:
-                        # try:
-                        obj = EmailModel.objects.filter(email__exact=em)
-                        if obj.exists():
-                            email_obj = obj.first()
-                            email_set.append(email_obj)
-                        else:
-                            # Validate the email using our master email validator
-                            val = email_validator.email_validate(em)
-                            sp = em.split('@')
-                            name = sp[0]
-                            domain = sp[-1]
+                    refined_emails = []
 
-                            # Adding to database
-                            obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
-                            email_set.append(obj)
-                        # except:
-                        #     pass
+                    
+                    # We want to reduce the emails we got here, to see if we have verified them before
+                    for i in got_emails:
+                        email_obj = EmailModel.objects.filter(email__exact=i)
+                        if email_obj.exists():
+                            email_obj2 = email_obj.first()
+                            if email_obj2.needs_validation():
+                                refined_emails.append(i)
+                            else:
+                                email_set.append(email_obj2)
+                        else:
+                            refined_emails.append(i)
+                    
+                    # Let's first verify this email with hunter api
+                    hunter_emails = email_hunter.verify_emails(emails=got_emails)
+                    if hunter_emails is not None:
+                        email_set.extend(hunter_emails)
+                    else:
+                        # Loop through searched emails to add to result set
+                        for em in got_emails:
+                            # try:
+                            obj = EmailModel.objects.filter(email__exact=em)
+                            if obj.exists():
+                                email_obj = obj.first()
+                                email_obj.validate()
+                                email_set.append(email_obj)
+                            else:
+                                # Validate the email using our master email validator
+                                val = email_validator.email_validate(em)
+                                sp = em.split('@')
+                                name = sp[0]
+                                domain = sp[-1]
+
+                                # Adding to database
+                                obj = EmailModel.objects.create(email=em, name=name, domain=domain, verified=val)
+                                email_set.append(obj)
+                            # except:
+                            #     pass
                     
                     # Get serializable result set
                     result_set = self.get_serializable(email_set)

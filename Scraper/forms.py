@@ -56,9 +56,12 @@ class EmailCallForm(forms.Form):
         formNum = self.data.get('formNum')
 
         if formNum and int(formNum) == 1:
-            for i in company_name:
-                if i in punctuation:
-                    raise forms.ValidationError("The company name you entered has a punctuation mark, it is not allowed")
+            if company_name:
+                for i in company_name:
+                    if i in punctuation:
+                        raise forms.ValidationError("The company name you entered has a punctuation mark, it is not allowed")
+            else:
+                raise forms.ValidationError("The company name is required")
 		
         return company_name
     

@@ -1,18 +1,24 @@
 import os
+import json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Read the configuration files and load them to the required fields
+CONFIG_LOCATION = 'MailFinder/config.json'
+with open(CONFIG_LOCATION, 'r') as f:
+    config = json.loads(f.read())
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-mm$5=7=^6srk=d%@g@$++umss0qmako9)d3t5)ko5)d-yz4*e'
+SECRET_KEY = config['GENERAL'][0]['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config['GENERAL'][0]['DEBUG']
 
 ALLOWED_HOSTS = ['*']
 
@@ -68,23 +74,26 @@ WSGI_APPLICATION = 'MailFinder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'mailfinderdb',
-#         'USER': 'mailadmin',
-#         'PASSWORD': 'alakio12345',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
+
+if config['GENERAL'][0]['CUSTOM_DB']:
+    DATABASES = {
+        'default': {
+            'ENGINE': config['GENERAL'][0]['ENGINE'],
+            'NAME': config['GENERAL'][0]['NAME'],
+            'USER': config['GENERAL'][0]['USER'],
+            'PASSWORD': config['GENERAL'][0]['PASSWORD'],
+            'HOST': config['GENERAL'][0]['HOST'],
+            'PORT': config['GENERAL'][0]['PORT'],
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -132,30 +141,42 @@ STATICFILES_DIRS= [
 
 
 #Emails settings
-EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-# EMAIL_HOST_USER=os.environ.get("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASS')
-EMAIL_HOST_USER = 'netrobeweb@gmail.com'
-EMAIL_HOST_PASSWORD = 'wpcgtxfwmiqnlbwv'
+EMAIL_BACKEND=config['EMAIL_CONF'][0]['EMAIL_BACKEND']
+EMAIL_HOST=config['EMAIL_CONF'][0]['EMAIL_HOST']
+EMAIL_PORT=config['EMAIL_CONF'][0]['EMAIL_PORT']
+EMAIL_USE_TLS=config['EMAIL_CONF'][0]['EMAIL_USE_TLS']
+EMAIL_HOST_USER = config['EMAIL_CONF'][0]['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = config['EMAIL_CONF'][0]['EMAIL_HOST_PASSWORD']
 # Custom user defined mail username
-# DEFAULT_FROM_EMAIL = 'info@xcrowme.com'
-DEFAULT_FROM_EMAIL = 'mailfinder@gmail.com'
-DEFAULT_COMPANY_EMAIL = 'netrobeweb@gmail.com'
+DEFAULT_FROM_EMAIL = config['EMAIL_CONF'][0]['DEFAULT_FROM_EMAIL']
+DEFAULT_COMPANY_EMAIL = config['EMAIL_CONF'][0]['DEFAULT_COMPANY_EMAIL']
 
 # DEA KEYS
 # DEC_LOADER = "Scraper.utils.custom_email_domain_loader"
 
 # GOOGLE SEARCH KEYS
-GOOGLE_SEARCH_API_KEY = "AIzaSyCgbUr7E_QlweVanuX5u4OU65YCc9MhVYM"
-GOOGLE_CSE_ID = "de1155bc82c628903"
+GOOGLE_SEARCH_API_KEY = config['GOOGLE_SEARCH_KEYS'][0]['GOOGLE_SEARCH_API_KEY']
+GOOGLE_CSE_ID = config['GOOGLE_SEARCH_KEYS'][0]['GOOGLE_CSE_ID']
 
 
 # Email Validator Class Conf
-STOP_STMP_CHECK = False
-VALIDATION_TIME = 30
-
+STOP_STMP_CHECK = config['EMAIL_VERIFICATION_CONF'][0]['STOP_STMP_CHECK']
+VALIDATION_TIME = config['EMAIL_VERIFICATION_CONF'][0]['VALIDATION_TIME']
 # SCRAPING CONF
-SCRAPING_TIME = 30
+SCRAPING_TIME = config['EMAIL_VERIFICATION_CONF'][0]['SCRAPING_TIME']
+
+
+# USEFUL FIXED HUNTER.IO API REQUIREMENTS
+EMAIL_TYPE = (
+    ('1', 'personal',),
+    ('2', 'generic',),
+)
+SENIOR_TYPE = (
+    ('1', 'junior',),
+    ('2', 'senior',),
+    ('3', 'executive',),
+)
+
+
+# HUNTER.IO API KEY
+HUNTER_API_KEY = config['HUNTER_API'][0]['HUNTER_API_KEY']

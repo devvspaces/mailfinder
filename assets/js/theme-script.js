@@ -607,9 +607,13 @@ function removeFormErrors(){
   company_name_input.parentElement.lastElementChild.innerHTML = ''
 }
 
-contacts.forEach(contact=>{
-  contact.addEventListener('submit', conLookup)
-})
+try{
+  contacts.forEach(contact=>{
+    contact.addEventListener('submit', conLookup)
+  })
+} catch(e){
+
+}
 
 
 let files = [];
@@ -812,3 +816,12 @@ try {
 } catch (error) {
   console.log(error)
 }
+
+
+
+// Code to make the class of btns submit-form to submit the forms after them
+let submit_form = $('#config_form .submit-form')
+submit_form.click(function(e){
+  let form_el = e.target.parentElement.nextElementSibling
+  form_el.submit()
+})
