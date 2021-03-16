@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, CreateView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from .models import Subscriber
 from .forms import SubscriberForm, ContactForm
@@ -104,12 +105,16 @@ def to_python(val):
         return False
     return val
 
-class AdminConfig(TemplateView):
+class AdminConfig(LoginRequiredMixin, UserPassesTestMixin,TemplateView):
     template_name = 'Mobile/config.html'
     extra_context = {
         'title': 'Admin Settings'
     }
     form_class = ContactForm
+
+    def test_func(self):
+        if not self.request.user.is_admin:
+            return False
 
     def get_config(self):
         # Read the configuration files and load them to the required fields

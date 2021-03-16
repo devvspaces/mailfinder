@@ -37,7 +37,7 @@ def login():
 
 # Login facebook with selenium webdriver
 driver = webdriver.Chrome('/Users/HP6460B/Downloads/driver_all/chromedriver')
-# driver.get('http://www.facebook.com')
+# driver.get('http://www.facebook.com')^
 
 # username = driver.find_element_by_id('email')
 # username.send_keys(FB_EMAIL)
