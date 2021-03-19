@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Read the configuration files and load them to the required fields
-CONFIG_LOCATION = '/home/maiilfinder/MailFinder/config.json'
+CONFIG_LOCATION = os.path.join(BASE_DIR, 'MailFinder/config.json')
 # CONFIG_LOCATION = 'config.json'
 with open(CONFIG_LOCATION, 'r') as f:
     config = json.loads(f.read())
