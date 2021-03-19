@@ -113,8 +113,9 @@ class AdminConfig(LoginRequiredMixin, UserPassesTestMixin,TemplateView):
     form_class = ContactForm
 
     def test_func(self):
-        if not self.request.user.is_admin:
+        if not self.request.user.admin:
             return False
+        return True
 
     def get_config(self):
         # Read the configuration files and load them to the required fields

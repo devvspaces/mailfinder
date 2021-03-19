@@ -1,7 +1,7 @@
 {
     "EMAIL_VERIFICATION_CONF": [
         {
-            "STOP_STMP_CHECK": false,
+            "STOP_STMP_CHECK": true,
             "VALIDATION_TIME": 30,
             "SCRAPING_TIME": 30
         }
